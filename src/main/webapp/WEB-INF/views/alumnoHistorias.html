@@ -1,0 +1,642 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="layout">
+
+<head>
+<title>Mis asignaciones</title>
+<meta name="_csrf" th:attr="content=${_csrf.token}" />
+<meta name="_csrf_header" th:attr="content=${_csrf.headerName}" />
+
+</head>
+
+<body>
+	<div layout:fragment="content">
+		<!-- Cabecera -->
+		<div class="row">
+			<div class="col-lg-12">
+				<h1 class="page-header text-center">MIS ASIGNACIONES</h1>
+			</div>
+
+			<div class="row">
+
+				<div class="col-lg-12 ">
+					<div class="col-lg-6">
+						<div th:if="${mensaje!=null}" class="alert alert-success fade in">
+							<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+							<strong>${mensaje}</strong>
+						</div>
+						<div
+							th:replace="template/fragments/fragmentosCita :: panelAsignaciones (estadoAsignacion = 'AUTORIZADA')"></div>
+					</div>
+
+					<div class="col-lg-6">
+						<div th:if="${mensaje!=null}" class="alert alert-success fade in">
+							<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+							<strong>${mensaje}</strong>
+						</div>
+						<div
+							th:replace="template/fragments/fragmentosCita :: panelAsignaciones (estadoAsignacion = 'ASIGNADA')"></div>
+					</div>
+				</div>
+
+
+				<!-- Registro de Citas -->
+				<div id="modalCita" class="modal fade" role="dialog">
+					<div class="modal-dialog">
+						<div class="modal-content">
+							<div class="modal-header-primary">
+								<button type="button" class="close" data-dismiss="modal">&times;</button>
+								<h4 class="modal-title text-center">
+									<b>REGISTRO DE NUEVA CITA</b>
+								</h4>
+							</div>
+							<div id="resultadoValidacion" class='notifications top-rigth'></div>
+							<div class="modal-body ">
+								<div class="row">
+									<div id="nroHC" class="col-lg-3"></div>
+									<div id="nombresPaciente" class="col-lg-9"></div>
+								</div>
+
+								<div class="row">
+									<div class="col-lg-12">
+										<div th:if="${mensaje != null}" class="alert alert-danger"
+											role="alert">
+											<p>
+												<span class="glyphicon glyphicon-exclamation-sign"
+													aria-hidden="true"></span> <span
+													th:text="${mensaje.getValor()}" th:remove="tag"
+													class="sr-only"> </span>
+											</p>
+										</div>
+									</div>
+								</div>
+
+								<div class="row">
+									<div class="col-lg-8 col-lg-offset-2">
+										<form id="formNuevaCita" th:action="@{citas/registrar}"
+											method="POST" class="form-horizontal" role="form">
+											<fieldset class="scheduler-border">
+												<legend class="scheduler-border">Datos de la cita</legend>
+
+												<div class="form-group">
+													<input type="hidden" name="idAsignacion" id="idAsignacion"></input>
+												</div>
+												<div class="form-group">
+													<label for="selectorCurso" class="col-lg-3 control-label">Curso</label>
+													<div class="col-lg-9">
+														<select class="form-control" th:id="idCurso"
+															th:name="idCurso" onchange="filtrar('Clinicas')">
+															<option value="-1">Seleccione Curso</option>
+															<option th:each="curso : ${cursos}"
+																th:value="${curso.idCurso}" th:text="${curso.nombre}">Periodoncia</option>
+														</select>
+													</div>
+												</div>
+
+												<div class="form-group">
+													<label for="selectorClinica" class="col-lg-3 control-label">Clínica</label>
+													<div class="col-lg-9">
+														<select th:remove="all-but-first" class="form-control"
+															id="idClinica" onchange="filtrar('Dias')"
+															name="idClinica">
+															<option th:value="${-1}">Seleccione Clínica</option>
+															<option th:each="clinica : ${clinicas}"
+																th:value="${clinica.idClinica}"
+																th:text="${clinica.nombre}"></option>
+															<!-- Clinica 1 (Lu, Mi, Vi)-->
+														</select>
+													</div>
+												</div>
+
+												<div class="form-group">
+													<label for="fechaAtencion" class="col-lg-3 control-label">Dia
+													</label>
+													<div class="col-lg-9">
+														<div class='input-group date' id='fechaAtencionDP'>
+															<input onkeypress="validarFecha()" required="required"
+																id="fechaAtencion" name="fechaAtencion" type='text'
+																placeholder="dd-mm-aaaa" disabled="disabled"
+																class="form-control" /> <span class="input-group-addon">
+																<span class="glyphicon glyphicon-calendar"></span>
+															</span>
+														</div>
+													</div>
+												</div>
+
+												<div class="form-group">
+													<label for="fecha_cita" class="col-lg-3 control-label">Turno</label>
+													<div class="col-lg-9">
+														<label class="radio-inline"> <input type="radio"
+															id="turno1" name="turno" value="M" checked="checked" />Mañana
+														</label> <label class="radio-inline"> <input type="radio"
+															value="T" id="turno2" name="turno" />Tarde
+														</label>
+													</div>
+												</div>
+
+
+											</fieldset>
+										</form>
+
+
+									</div>
+
+									<div class="col-lg-4"></div>
+								</div>
+
+								<div class="row">
+									<div class="col-lg-12">
+										<fieldset class="scheduler-border">
+											<legend class="scheduler-border">Lista de Horarios
+												permitidos</legend>
+											<div class="form-group">
+												<div class="col-lg-12">
+													<table id="tablaClinicas" class="table table-hover">
+														<thead>
+															<tr>
+																<th>N°</th>
+																<th>Clinica</th>
+																<th>Dias</th>
+															</tr>
+														</thead>
+														<tbody>
+														</tbody>
+													</table>
+												</div>
+											</div>
+										</fieldset>
+									</div>
+								</div>
+							</div>
+
+							<div class="modal-footer">
+								<div class="form-group">
+									<div class="col-lg-offset-2 col-lg-10">
+										<button type="submit" onclick="registrarCita()"
+											class="btn btn-sm btn-primary">REGISTRAR</button>
+									</div>
+								</div>
+							</div>
+
+
+						</div>
+					</div>
+				</div>
+
+				<!-- Historial de Citas -->
+				<div id="modalHistorial" class="modal fade" role="dialog">
+
+					<div id="mdialTamanio" class="modal-dialog">
+						<!-- Modal content-->
+						<div class="modal-content">
+
+							<div class="modal-header-primary">
+								<button type="button" class="close" data-dismiss="modal">&times;</button>
+								<h4 class="modal-title text-center">HISTORIAL DE CITAS</h4>
+							</div>
+
+							<div class="modal-body">
+								<div id="historialCitas">
+									<div class="col-lg-12">
+
+										<div
+											th:if="${listaCitasPorAsignacion != null and !listaCitasPorAsignacion.isEmpty()}">
+											<div class="row">
+												<div class="col-lg-6">
+													<h3
+														th:text="${'Paciente: ' + listaCitasPorAsignacion[0].paciente}"></h3>
+												</div>
+												<div class="col-lg-6">
+
+													<h3
+														th:if="${listaCitasPorAsignacion[0].numeroContrato != null}"
+														th:text="${'Contrato: ' + listaCitasPorAsignacion[0].numeroContrato}"></h3>
+												</div>
+											</div>
+
+
+											<table class="table table-striped" data-sort-name="name">
+												<thead>
+													<tr>
+														<th class="text-center" data-field="name"
+															data-sortable="true">#</th>
+														<th>Curso</th>
+														<th>Año</th>
+														<th>Fecha</th>
+														<th class="text-center">Turno</th>
+														<th>Clínica</th>
+														<th></th>
+													</tr>
+												</thead>
+
+												<tbody id="cuerpoHistorial">
+													<tr th:id="citaFila+${stat.index + 1}" th:onclick="'pintarFila(this.id);'"
+														th:class="${cita.estado == 'ARCHIVADA'}? success : info"
+														th:each="cita, stat : ${listaCitasPorAsignacion}">
+														<td class="text-center" width="10%"
+															th:text="${stat.index + 1}"></td>
+														<td width="25%" th:text="${cita.curso}"></td>
+														<td width="10%" th:text="${cita.anio}"></td>
+														<td width="20%" th:text="${cita.fechaAtencion}"></td>
+														<td class="text-center" width="10%"
+															th:text="${cita.turno}"></td>
+														<td width="15%" th:text="${cita.clinica}"></td>
+														<td th:if="${dateUtil.compareDate(cita.fechaAtencion,hoy)} > 0" width="10%" align="center">
+															<a th:id="citaElimina+${stat.index + 1}"
+															style="cursor: pointer;"
+															th:if="${cita.estado != 'ARCHIVADA'}"
+															th:onclick="'cargarModalDeConfirmacion(id,\''+${cita.idCita}+'\', \''+${idAsignacion}+'\');'">
+																<img th:src="@{/resources/icons/cancelar.png}"
+																width="100%" />
+															</a>
+														</td>
+													</tr>
+												</tbody>
+											</table>
+
+										</div>
+									</div>
+
+								</div>
+							</div>
+
+							<div class="modal-footer">
+								<button type="button" class="btn btn-primary"
+									data-dismiss="modal">Cerrar</button>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div id="modalDialogo" class="modal fade" role="dialog">
+
+					<div id="mo" class="modal-dialog modal-sm modal-vertical-centered">
+						<!-- Modal content-->
+						<div class="modal-content">
+
+							<div class="modal-header-danger">
+								<button type="button" class="close" data-dismiss="modal">&times;</button>
+								<h4 class="modal-title text-center">Confirmación</h4>
+							</div>
+
+							<div class="modal-body">
+								<div id="confirmacion">¿Desea Cancelar la Cita?</div>
+							</div>
+
+							<div class="modal-footer">								
+								<button type="button" class="btn btn-default"
+									data-dismiss="modal">No</button>
+								<button type="button" class="btn btn-danger"
+									data-dismiss="modal" onclick="cancelarCita()">Si</button>	
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+
+		<div id="resultadoValidacion" class='notifications top-right'></div>
+
+	</div>
+
+
+	<!-- /.row -->
+	<th:block layout:fragment="script">
+
+		<script th:inline="javascript">
+	$.fn.serializeObject = function()
+		{
+		    var o = {};
+		    var a = this.serializeArray();
+		    $.each(a, function() {
+		        if (o[this.name] !== undefined) {
+		            if (!o[this.name].push) {
+		                o[this.name] = [o[this.name]];
+		            }
+		            o[this.name].push(this.value || '');
+		        } else {
+		            o[this.name] = this.value || '';
+		        }
+		    });
+		    return o;
+		};
+	</script>
+
+	<script th:inline="javascript">
+	function registrarCita(){
+		
+		var token = $("meta[name='_csrf']").attr("content");
+		var header = $("meta[name='_csrf_header']").attr("content");
+
+		/*<![CDATA[*/
+		var ERROR = -1, OK = 1, resultado, mensaje;
+		
+			if($('#fechaAtencion').val() != '' &&
+					$('#idCurso').val() != -1  &&
+					$('#idClinica').val() != -1){
+				
+				//$("#resultadoValidacion").load( 'citas/registrar', $("#formNuevaCita").serialize());
+				var form = $("#formNuevaCita");
+			    url = form.attr('action');
+			    //userId = form.find('input[name="userId"]').val(),
+
+			    dat = form.serialize();
+					console.log(dat);
+					$.getJSON(url, 
+			                  dat,
+			                  function(obj) {
+			                    resultado = obj.tipo;
+			                    mensaje = obj.mensaje;
+			                    if(resultado == OK){
+			    			    	console.log(mensaje);
+			    			    	$('.top-right').notify({
+			    					    message: {text: mensaje},
+			    			    		type: 'success'
+			    			     }).show(); 
+			    			     $('#modalCita').modal('hide');
+			    			    } else {
+			    			    	$('.top-right').notify({
+			    					    message:  {text: mensaje},
+			    			    		type: 'warning'
+			    			     }).show();		    	
+			    			    }
+						}
+			        );
+			
+			    
+			} else {
+				$('.top-right').notify({
+				    message:  {text: "Llene todos los campos"},
+		    		type: 'danger'
+		     }).show();
+			}
+	}
+	/*]]>*/
+	</script>
+
+
+		<script type="text/javascript" th:inline="javascript">
+			function enviarIDAsignacion(elemt) {
+				document.getElementById("idAsignacion").value = elemt.value;
+				//limpiar formulario de citas
+				document.getElementById("formNuevaCita").reset();
+				//eliminar filas de la tabla
+				var table = document.getElementById('tablaClinicas');
+				while(table.rows.length > 1) {
+	  				table.deleteRow(table.rows.length-1);
+				}
+
+			}
+		</script>
+
+		<script th:inline="javascript">
+			function cargarHistorialCitas(elemt) {
+				$('#historialCitas').load('citas/historialPorPaciente',
+						"idAsig=" + elemt.value);
+				
+			}
+		</script>
+		
+		<script th:inline="javascript">
+			function pintarFila(idFila){				
+				$('#cuerpoHistorial tr').each(function(index, element){
+					if ($(element).attr('id')==idFila) {
+						$(element).removeClass("info");						
+						$(element).addClass("warning");
+					}else{
+						$(element).removeClass("danger");
+						$(element).removeClass("warning");
+						$(element).addClass("info");	
+					}
+					
+				});
+				
+				
+			}
+		</script>
+				
+		<script th:inline="javascript"> 
+			var idCita;
+			var idAsignacion;
+		
+ 			function cargarModalDeConfirmacion(columnaCita, idCit, idAsig) { 				 				 			
+ 				
+ 				var filaCita = $("#"+columnaCita).parents('tr'); 			    
+ 			    idFila = filaCita.attr('id');
+ 				
+ 			   $('#cuerpoHistorial tr').each(function(index, element){
+					if ($(element).attr('id')==idFila) {
+						$(element).removeClass("info");
+						$(element).addClass("danger");
+					}else{
+						$(element).removeClass("danger");
+						$(element).addClass("info");	
+					}
+					
+				});
+ 				
+ 				idCita = idCit;
+				idAsignacion = idAsig;
+ 				$('#modalDialogo').modal('show');
+				
+ 			}
+ 			
+			function cancelarCita() {
+				
+				var dato = {
+      					idCita: idCita
+           				};
+				
+				$.ajax({
+		            url: "citas/cancelarCita",
+		            type: "get",
+		            contentType: 'application/json',
+		            data: dato,
+		            success: function(data){
+		            	$('#historialCitas').load('citas/historialPorPaciente',
+								"idAsig=" + idAsignacion);
+		            },
+		            error: function(){
+		            	alert(":/")
+		                console.log("hubo error");
+		            }
+		            });	  
+				
+			}
+ 			
+ 		</script>
+ 		
+ 		<script>
+		function inicializarFormulario(horarios){
+			$('#fechaAtencionDP').datepicker('remove');
+		    $('#fechaAtencion').value = "";
+			$('#idClinica').html('');
+			$('#fechaAtencion').val("");
+		}
+		</script>
+
+		<script th:inline="javascript">
+		/*<![CDATA[*/
+		window.filtrar = function(tipoFiltro){
+		<!--/* Filtra las clínicas */-->
+		var idCurso = document.getElementById("idCurso").value;
+		var idClinica = document.getElementById("idClinica").value;
+		var table = document.getElementById('tablaClinicas');
+		var horarios = /*[[${horarios}]]*/;
+		var dias = {0:false, 1:false, 2:false, 3:false, 4:false, 4:false, 5:false, 6:false}
+		var clinicas = {}; 
+		
+		if(tipoFiltro == "Clinicas"){
+			
+		    $('#fechaAtencionDP').datepicker('remove');
+		    $('#fechaAtencion').value = "";
+			$('#idClinica').html('');
+			$('#fechaAtencion').val("");
+			
+			//eliminar filas de la tabla
+			while(table.rows.length > 1) {
+  				table.deleteRow(table.rows.length-1);
+			}
+
+			if(idCurso !== "-1"){
+				for (i = 0; i < horarios.length; i++) { 
+				  	if(horarios[i].idCurso == idCurso){
+					  	clinicas[horarios[i].clinicaBO.idClinica]=horarios[i].clinicaBO.nombre;
+				 	}
+				}
+			} 
+			
+			//clinicas.sort();
+			$('#idClinica').append($('<option>', { value: -1, text : "Seleccione Clinica"} )); 
+			 for (key in clinicas){ 
+				$('#idClinica').append($('<option>',
+					{ value: key,
+					  text : clinicas[key]
+					}));
+				diasFiltrados = filtrarHorariosClinica(horarios, dias, idCurso, key);
+				addRow(clinicas[key], diasFiltrados, table);
+			}
+		}
+
+		if(tipoFiltro == 'Dias'){
+			
+			var diasDeshabilitados = [];
+			var diasHabilitados = [];
+			var diasFiltrados = filtrarHorariosClinica(horarios, dias, idCurso, idClinica);
+		     
+		     for (var key in dias) {
+					if(diasFiltrados[key]){
+						diasHabilitados.push(key);
+					} else {
+						diasDeshabilitados.push(key);
+					}
+			}
+		   
+		    console.log(diasDeshabilitados);
+		    console.log(diasHabilitados);
+
+		    $('#fechaAtencion').val("");
+		    $('#fechaAtencionDP').datepicker('remove');
+		    $("#fechaAtencion").prop('disabled', false);
+		    $('#fechaAtencionDP').datepicker({
+				orientation: "bottom left",
+				pickTime : false,
+				format : 'dd-mm-yyyy',
+				language : "es",
+				startDate: '+1d',	
+				endDate: '+25d',	
+				autoclose : true,
+				daysOfWeekDisabled: diasDeshabilitados,
+				daysOfWeekHighlighted: diasHabilitados,
+				todayHighlight: true
+			});	     
+		}
+		
+		idCurso = document.getElementById("idCurso").value;
+		idClinica = document.getElementById("idClinica").value;
+		
+		if(idCurso==-1 || idClinica==-1){
+			$("#fechaAtencion").prop('disabled', true);
+		}
+		
+		function filtrarHorariosClinica(horarios, diasTotales, idCurso, idClinica){
+	    	for (i = 0; i < horarios.length; i++) { 
+			 	 if(horarios[i].clinicaBO.idClinica == idClinica && horarios[i].idCurso == idCurso){
+				  	diasTotales[horarios[i].dia] = true;
+				  	console.log(horarios[i].dia);
+			  		}
+				}
+			return diasTotales;
+		}
+		
+		function obtenerNombre(numDia){
+	    	switch(numDia){
+	    		case "0" : return " Domingo"; 
+	    		case "1" : return " Lunes";
+	    		case "2" : return " Martes";
+	    		case "3" : return " Miercoles";
+	    		case "4" : return " Jueves";
+	    		case "5" : return " Viernes";
+	    		case "6" : return " Sábado";
+	    		default: return "";
+	    	}
+		}
+		
+		function addRow(clinica, diasNum, table) {
+            var rowCount = table.rows.length;
+            var row = table.insertRow(rowCount);
+            var nd = [];
+            
+            var cell1 = row.insertCell(0); 
+            cell1.innerHTML = rowCount;
+            
+            var cell2 = row.insertCell(1);
+            var node2 = document.createTextNode(clinica);
+            cell2.appendChild(node2);
+            
+            var cell3 = row.insertCell(2);
+            console.log(diasNum);
+            for(key in diasNum){
+            	if(diasNum[key]){
+            	console.log(obtenerNombre(key));
+            	nd.push(obtenerNombre(key));
+            	}
+            }
+            var node3 = document.createTextNode(nd.toString());
+            cell3.appendChild(node3);
+            
+            table.style.textAlign = "left";
+		}
+		
+	}
+	/*]]>*/
+	</script>
+
+		<script th:inline="javascript">
+	function notificar(msg){
+		$('#notificacionCita').notify(
+			{
+				message : {
+							html : "<strong>" + msg + "</strong>"
+						  },
+				type 	: 'success'
+			}).show();
+		}
+	</script>
+
+		<script th:inline="javascript">
+	function validarFecha(){
+		  $('#fechaAtencion').val("");
+	}
+	</script>
+	</th:block>
+
+</body>
+
+<!--ideal seria que aqui hubiera una solo metodo y jugando con los variables, activar uno u otro...-->
+
+</html>

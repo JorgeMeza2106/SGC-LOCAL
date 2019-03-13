@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<link th:href="@{/resources/css/pnotify.custom.min.css}"
+	rel="stylesheet"></link>
+</head>
+<body>
+	<div th:fragment="resultadoBusquedaPacientes">
+		<div th:if="${mensaje!=null}"
+			th:class="${mensaje.tipo==1} ? 'alert alert-success fade in' : 'alert alert-danger fade in'"
+			th:text="${mensaje.mensaje}"></div>
+		<div class="panel panel-primary">
+			<div class="panel-heading">
+				<h3 class="panel-title">PACIENTES</h3>
+			</div>
+			<div class="panel-body">
+				<div class="table-responsive">
+					<table class="table table-bordered table-hover " id="tabla"
+						data-sort-name="name">
+						<thead>
+							<tr class="info">
+								<th data-field="name" data-sortable="true"></th>
+								<th>N° de HC</th>
+								<th>Contrato</th>
+								<th>DNI</th>
+								<th>Paciente</th>
+								<th>Fecha</th>
+								<th th:if="${tipoUsuario != 'alumno'}">Operador</th>
+								<th>Curso</th>
+								<th align="center">Asistencia</th>
+								<th align="center">Hora entrada</th>
+							</tr>
+						</thead>
+
+						<tbody id="resultadoBusqueda">
+							<tr
+								th:class="${mensaje!=null and mensaje.tipo==1} ? 'warning' : ''"
+								th:each="cita, stat : ${citasAsistencia}">
+								<td th:text="${stat.index + 1}"></td>
+								<td th:text="${cita.numeroHC}"></td>
+								<td th:text="${cita.numeroContrato}"></td>
+								<td th:text="${cita.dniPaciente}"></td>
+								<td th:text="${cita.paciente}"></td>
+								<td th:text="${cita.fechaAtencion}"></td>
+								<td th:if="${tipoUsuario != 'alumno'}"
+									th:text="${cita.operador}"></td>
+								<td th:text="${cita.curso}"></td>
+								<td th:id="${cita.dniPaciente}" align="center">
+									<div th:if="${mensaje!=null}">
+										<div th:if="${mensaje.tipo==-1}">
+											<button class="btn btn-xs btn-success"
+												th:onclick="'registrarAsistencia(\'' + ${cita.idCita}  + '\', \'' + ${idClinica}  + '\', \'' + ${cita.dniPaciente}  + '\');'"
+												th:value="${cita.idCita}">
+												<span class="glyphicon glyphicon-ok"></span> &nbsp;
+											</button>
+										</div>
+										<div th:if="${mensaje.tipo==1}" th:text="ASISTIÍO"></div>
+									</div>
+									<div th:if="${mensaje==null}">
+										<div th:if="${cita.fechaAsistencia==null}">
+											<button class="btn btn-xs btn-success"
+												th:onclick="'registrarAsistencia(\'' + ${cita.idCita}  + '\', \'' + ${idClinica}  + '\', \'' + ${cita.dniPaciente}  + '\');'"
+												th:value="${cita.idCita}">
+												<span class="glyphicon glyphicon-ok"></span> &nbsp;
+											</button>
+										</div>
+										<div th:if="${cita.fechaAsistencia!=null}" th:text="ASISTIÍO"></div>
+									</div>
+
+								</td>
+								<td align="center" th:text="${cita.fechaAsistencia}"></td>
+							</tr>
+						</tbody>
+
+					</table>
+				</div>
+			</div>
+
+		</div>
+
+	</div>
+</body>
+
+
+<script>
+	function gg() {
+		var table = $('#tabla').DataTable({
+
+			//"scrollX": true,
+			"scrollY" : "400px",
+			"language" : {
+				"lengthMenu" : "Desplegar _MENU_ filas por pagina",
+				"zeroRecords" : "No hay resultados",
+				"info" : "Mostrando pagina _PAGE_ de _PAGES_",
+				"infoEmpty" : "No hay filas disponibles",
+				"infoFiltered" : "(Filtrado de _MAX_ total registros)",
+				"search" : "Buscar:",
+				"previous" : "Anterior",
+				"next" : "Siguiente"
+			}
+
+		});
+	}
+</script>
+
+
+</html>

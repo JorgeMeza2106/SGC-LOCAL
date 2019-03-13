@@ -1,0 +1,383 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" lang="es"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
+<meta name="viewport" content="width=device-width, initial-scale=1"></meta>
+<meta name="description" content=""></meta>
+<meta name="author" content=""></meta>
+
+
+
+<!-- Bootstrap Core CSS -->
+<link th:href="@{/resources/css/bootstrap.css}" rel="stylesheet"></link>
+
+<!-- Custom Fonts -->
+<link th:href="@{/resources/font-awesome/css/font-awesome.min.css}"
+	rel="stylesheet" type="text/css"></link>
+
+<link th:href="@{/resources/css/bootstrap-datetimepicker.min.css}"
+	rel="stylesheet"></link>
+<link th:href="@{/resources/css/bootstrap-datepicker.min.css}"
+	rel="stylesheet"></link>
+
+<!--  <link th:href="@{/resources/css/datepicker.css}" rel="stylesheet"></link>-->
+<link th:href="@{/resources/less/datepicker.less}"></link>
+<!--  <link th:href="@{/resources/calendario/datepicker3.css}" rel="stylesheet"></link>-->
+<!-- Morris Charts CSS -->
+<link th:href="@{/resources/css/plugins/morris.css}" rel="stylesheet"></link>
+
+<!-- Para notificaciones -->
+<link th:href="@{/resources/css/bootstrap-notify.css}" rel="stylesheet"></link>
+
+<!-- Para cargar archivos -->
+<link th:href="@{/resources/fileImput/fileinput.css}" rel="stylesheet"></link>
+
+<!-- Para cargar filtros -->
+
+<link th:href="@{/resources/filtros/jquery.dataTables.min.css}"
+	rel="stylesheet"></link>
+<link th:href="@{/resources/filtros/dataTables.bootstrap.min.css}"
+	rel="stylesheet"></link>
+
+<!-- Custom CSS -->
+<link th:href="@{/resources/css/sb-admin.css}" rel="stylesheet"></link>
+
+<link th:href="@{/resources/css/typeaheadjs.css}" rel="stylesheet"></link>
+
+<link th:href="@{/resources/css/estilo.css}" rel="stylesheet"></link>
+
+<link th:href="@{/resources/css/plugins/style.css}" rel="stylesheet"/>
+
+
+
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+<!-- <script
+		th:src="@{https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js}"></script>   -->
+<!-- Morris Charts JavaScript -->
+
+
+</head>
+
+<body>
+
+	<!-- Navigation -->
+	<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+		<section class="wrap">
+			<div class="container-fluid">
+
+				<div class="navbar-header">
+
+					<button type="button" class="navbar-toggle collapsed"
+						data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"
+						aria-expanded="false">
+						<span class="sr-only">Toggle navigation</span> <span
+							class="icon-bar"></span> <span class="icon-bar"></span> <span
+							class="icon-bar"></span>
+					</button>
+
+					<a class="navbar-brand" sec:authorize="hasRole('ADMIN_CC')" th:href="@{/admin_cc/historias/listar/}"><img
+						th:src="@{/resources/img/logo3.png}" alt="FO" /></a>
+					<a class="navbar-brand" sec:authorize="hasRole('ADMIN_OA')" th:href="@{/admin_oa/citas/listar/}"><img
+						th:src="@{/resources/img/logo3.png}" alt="FO" /></a>
+					<a class="navbar-brand" sec:authorize="hasRole('ADMIN_AD')" th:href="@{/admin_ad/historias/listar/}"><img
+						th:src="@{/resources/img/logo3.png}" alt="FO" /></a>
+					<a class="navbar-brand" sec:authorize="hasRole('ADMIN_AG')" th:href="@{/admin_ag/citas/listar}"><img
+						th:src="@{/resources/img/logo3.png}" alt="FO" /></a>
+					<a class="navbar-brand" sec:authorize="hasRole('ALUMNO')" th:href="@{/alumno/asignaciones/listar}"><img
+						th:src="@{/resources/img/logo3.png}" alt="FO" /></a>
+					<a class="navbar-brand" sec:authorize="hasRole('ADMIN_OD')" th:href="@{/admin_od/historias/listar/}"><img
+						th:src="@{/resources/img/logo3.png}" alt="FO" /></a>
+					<a class="navbar-brand" sec:authorize="hasRole('ADMIN_CL')" th:href="@{/admin_cl/pacientes/listar/}"><img
+						th:src="@{/resources/img/logo3.png}" alt="FO" /></a>
+					<a class="navbar-brand" sec:authorize="hasRole('ADMIN_CA')" th:href="@{/admin_ca/historias/listar/}"><img
+						th:src="@{/resources/img/logo3.png}" alt="FO" /></a>
+				</div>
+
+				<div class="collapse navbar-collapse"
+					id="bs-example-navbar-collapse-1">
+					<ul class="nav navbar-nav navbar-right">
+
+					<!-- 
+						<li class="dropdown" sec:authorize="hasRole('ADMIN_OA')"><a
+							href="#" class="dropdown-toggle" data-toggle="dropdown"
+							role="button" aria-haspopup="true" aria-expanded="false">CITAS
+								<span class="caret"></span>													
+						</a>
+							<ul class="dropdown-menu">
+								<li><a th:href="@{/admin_oa/citas/registrarAdicional}">Registrar cita</a></li>
+								<li><a th:href="@{/admin_oa/citas/listar}">Listar Citas</a></li>
+
+							</ul></li>
+							 --> 
+						<li sec:authorize="hasRole('ADMIN_CC')">
+						<a
+							href="#" class="dropdown-toggle" data-toggle="dropdown"
+							role="button" aria-haspopup="true" aria-expanded="false" ><i
+								class="fa fa-fw fa-edit"></i>CITAS <span class="caret"></span></a>
+							<ul class="dropdown-menu">
+								<li><a th:href="@{/admin_cc/citas/registrarAdicional}">Adicionales</a></li>
+								<li><a th:href="@{/admin_cc/citas/listar}">Listar citas</a></li>
+							</ul>
+						
+						</li>
+						
+						<li sec:authorize="hasRole('ADMIN_OA')">
+						<a
+							href="#" class="dropdown-toggle" data-toggle="dropdown"
+							role="button" aria-haspopup="true" aria-expanded="false" ><i
+								class="fa fa-fw fa-edit"></i>CITAS <span class="caret"></span></a>
+							<ul class="dropdown-menu">								
+								<li><a th:href="@{/admin_oa/citas/listar}">Listar citas</a></li>
+							</ul>
+						
+						</li>
+						
+						<li sec:authorize="hasRole('ADMIN_AG')">
+						<a
+							href="#" class="dropdown-toggle" data-toggle="dropdown"
+							role="button" aria-haspopup="true" aria-expanded="false" ><i
+								class="fa fa-fw fa-edit"></i>CITAS <span class="caret"></span></a>
+							<ul class="dropdown-menu">
+								<li><a th:href="@{/admin_ag/citas/registrarAdicional}">Adicionales</a></li>
+								<li><a th:href="@{/admin_ag/citas/listar}">Listar citas</a></li>
+							</ul>
+						
+						</li>
+
+						<li class="dropdown" sec:authorize="hasRole('ADMIN_CC')"><a
+							href="#" class="dropdown-toggle" data-toggle="dropdown"
+							role="button" aria-haspopup="true" aria-expanded="false">HISTORIAS
+								<span class="caret"></span>
+						</a>
+							<ul class="dropdown-menu">
+<!-- 								<li><a th:href="@{/admin_oa/historias/registrar}">Registrar -->
+<!-- 										Historia</a></li> -->
+								<li><a th:href="@{/admin_cc/historias/listar/}">Listar
+										Historia</a></li>
+								<li><a th:href="@{/admin_cc/historias/importar}">Importar
+										Historias</a></li>
+							</ul>
+						</li>
+						
+						<li class="dropdown" sec:authorize="hasRole('ADMIN_AD')"><a
+							href="#" class="dropdown-toggle" data-toggle="dropdown"
+							role="button" aria-haspopup="true" aria-expanded="false">HISTORIAS
+								<span class="caret"></span>
+						</a>
+							<ul class="dropdown-menu">
+								<li><a th:href="@{/admin_ad/historias/registrar}">Registrar
+										Historia</a></li>
+								<li><a th:href="@{/admin_ad/historias/listar/}">Listar
+										Historia</a></li>								
+							</ul>
+						</li>
+						
+						<li class="dropdown" sec:authorize="hasRole('ADMIN_OD')"><a
+							href="#" class="dropdown-toggle" data-toggle="dropdown"
+							role="button" aria-haspopup="true" aria-expanded="false">HISTORIAS
+								<span class="caret"></span>
+						</a>
+							<ul class="dropdown-menu">
+<!-- 								<li><a th:href="@{/admin_od/historias/registrar}">Registrar -->
+<!-- 										Historia</a></li> -->
+								<li><a th:href="@{/admin_od/historias/listar/}">Listar
+										Historia</a></li>								
+							</ul>
+						</li>
+						
+						<li class="dropdown" sec:authorize="hasRole('ADMIN_CA')"><a
+							href="#" class="dropdown-toggle" data-toggle="dropdown"
+							role="button" aria-haspopup="true" aria-expanded="false">HISTORIAS
+								<span class="caret"></span>
+						</a>
+							<ul class="dropdown-menu">
+								<li><a th:href="@{/admin_ca/historias/listar/}">Listar
+										Historia</a></li>								
+							</ul>
+						</li>
+						
+						<li class="dropdown" sec:authorize="hasRole('ADMIN_CL')"><a
+							href="#" class="dropdown-toggle" data-toggle="dropdown"
+							role="button" aria-haspopup="true" aria-expanded="false">ASISTENCIA
+								<span class="caret"></span>
+						</a>
+							<ul class="dropdown-menu">
+								<li><a th:href="@{/admin_cl/pacientes/listar}">Pacientes</a></li>
+								<li><a th:href="@{/admin_cl/alumnos/listar}">Alumnos</a></li>								
+							</ul>
+						</li>
+						<li sec:authorize="hasRole('ADMIN_CL')"><a
+							th:href="@{/admin_cl/historias/listar/}"><i
+								class="fa fa-fw fa-edit"></i>ASIGNACIONES</a></li>
+
+						<li sec:authorize="hasRole('ALUMNO')"><a
+							th:href="@{/alumno/asignaciones/listar}"><i
+								class="fa fa-fw fa-edit"></i>ASIGNACIONES</a></li>
+
+						<li sec:authorize="hasRole('ALUMNO')"><a
+							th:href="@{/alumno/citas/historialCompleto}"><i
+								class="fa fa-fw fa-edit"></i>HISTORIAL DE CITAS</a></li>
+
+						<!-- Top Menu Items -->
+
+						<li class="dropdown">
+						    <a sec:authorize="hasRole('ALUMNO')" href="#" class="dropdown-toggle"
+								
+								data-toggle="dropdown">
+								<i class="fa fa-user" ></i> <span sec:authentication="principal.TipoUsuario.UsuarioBO.Nombre"></span>
+															<span sec:authentication="principal.TipoUsuario.UsuarioBO.ApellidoPaterno"></span><b
+									class="caret"></b>
+							</a>
+							
+							<a sec:authorize="hasRole('ADMIN_CC')" href="#" class="dropdown-toggle"
+								
+								data-toggle="dropdown">
+							
+								<i class="fa fa-user"  ></i> <span sec:authentication="principal.TipoUsuario.Nombre"></span> 
+															<span sec:authentication="principal.TipoUsuario.ApellidoPaterno"></span> <b
+								class="caret"></b>
+							</a>
+							
+							<a sec:authorize="hasRole('ADMIN_OA')" href="#" class="dropdown-toggle"
+								
+								data-toggle="dropdown">
+							
+								<i class="fa fa-user"  ></i> <span sec:authentication="principal.TipoUsuario.Nombre"></span> 
+															<span sec:authentication="principal.TipoUsuario.ApellidoPaterno"></span> <b
+								class="caret"></b>
+							</a>
+							
+							<a sec:authorize="hasRole('ADMIN_AD')" href="#" class="dropdown-toggle"
+								
+								data-toggle="dropdown">
+							
+								<i class="fa fa-user"  ></i> <span sec:authentication="principal.TipoUsuario.Nombre"></span> 
+															<span sec:authentication="principal.TipoUsuario.ApellidoPaterno"></span> <b
+								class="caret"></b>
+							</a>
+							
+							<a sec:authorize="hasRole('ADMIN_OD')" href="#" class="dropdown-toggle"
+								
+								data-toggle="dropdown">
+							
+								<i class="fa fa-user"  ></i> <span sec:authentication="principal.TipoUsuario.Nombre"></span> 
+															<span sec:authentication="principal.TipoUsuario.ApellidoPaterno"></span> <b
+								class="caret"></b>
+							</a>
+							
+							<a sec:authorize="hasRole('ADMIN_AG')" href="#" class="dropdown-toggle"								
+								data-toggle="dropdown">							
+								<i class="fa fa-user"  ></i> <span sec:authentication="principal.TipoUsuario.Nombre"></span> 
+															<span sec:authentication="principal.TipoUsuario.ApellidoPaterno"></span> <b
+								class="caret"></b>
+							</a>
+							<a sec:authorize="hasRole('ADMIN_CL')" href="#" class="dropdown-toggle"								
+								data-toggle="dropdown">							
+								<i class="fa fa-user"  ></i> <span sec:authentication="principal.TipoUsuario.Nombre"></span> 
+															<span sec:authentication="principal.TipoUsuario.ApellidoPaterno"></span> <b
+								class="caret"></b>
+							</a>	
+							
+							<a sec:authorize="hasRole('ADMIN_CA')" href="#" class="dropdown-toggle"
+								
+								data-toggle="dropdown">
+							
+								<i class="fa fa-user"  ></i> <span sec:authentication="principal.TipoUsuario.Nombre"></span> 
+															<span sec:authentication="principal.TipoUsuario.ApellidoPaterno"></span> <b
+								class="caret"></b>
+							</a>
+													
+							<ul class="dropdown-menu">
+								<li><a th:href="@{/logout}"><i
+										class="fa fa-fw fa-power-off"></i> CERRAR SESION</a>
+								</li>
+							</ul>
+						</li>
+					</ul>
+
+
+
+					<ul class="nav navbar-right top-nav">
+
+					</ul>
+
+				</div>
+			</div>
+		</section>
+
+
+
+		<!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
+		<!--  
+		<div class="collapse navbar-collapse navbar-ex1-collapse">
+
+			<ul class="nav navbar-nav side-nav">
+
+				<li sec:authorize="hasRole('ADMIN_OA')"><a
+					th:href="@{/admin_oa/historias/listar/}"><i class="fa fa-fw fa-dashboard"></i>Principal</a>
+				</li>
+
+				<li data-stopPropagation="true" sec:authorize="hasRole('ADMIN_OA')"><a
+					href="javascript:;" data-toggle="collapse"
+					data-target="#opcionesCitas"><i class="fa fa-fw fa-arrows-v"></i>
+						<strong>Citas</strong> <i class="fa fa-fw fa-caret-down"></i></a>
+					<ul id="opcionesCitas" class="collapse">
+						<li><a th:href="@{/admin_oa/citas/listar}">Citas del dia</a></li>
+						<li><a th:href="@{/admin_oa/citas/estadisticas}">Reporte
+								de Citas</a></li>
+					</ul></li>
+
+				<li data-stopPropagation="true" sec:authorize="hasRole('ADMIN_OA')"><a
+					href="javascript:;" data-toggle="collapse"
+					data-target="#opcionesHC"> <i class="fa fa-fw fa-arrows-v"></i>
+						Historias Clínicas <i class="fa fa-fw fa-caret-down"></i></a>
+					<ul id="opcionesHC" class="collapse">
+						<li><a th:href="@{/admin_oa/historias/listar/}">Listar
+								Historia</a></li>
+						<li><a th:href="@{/admin_oa/historias/registrar}">Registrar
+								Historia</a></li>
+						<li><a th:href="@{/admin_oa/historias/importar}">Importar
+								Historias</a></li>
+						
+					</ul></li>
+				
+
+				<li sec:authorize="hasRole('ALUMNO')"><a href="javascript:;"
+					data-toggle="collapse" data-target="#opcionesHC"> <i
+						class="fa fa-fw fa-arrows-v"></i> Historias Clínicas <i
+						class="fa fa-fw fa-caret-down"></i></a>
+					<ul id="opcionesHC" class="collapse">
+						<li><a th:href="@{/alumno/asignaciones/listar}">
+								Asignaciones </a></li>
+					</ul></li>
+
+				<li sec:authorize="hasRole('ALUMNO')"><a
+					th:href="@{/alumno/citas/historialCompleto}"><i class="fa fa-fw fa-edit"></i>Historial
+						de Citas</a></li>
+
+			</ul>
+		</div>
+		
+		-->
+		<!-- /.navbar-collapse -->
+	</nav>
+
+
+
+</body>
+
+
+</html>

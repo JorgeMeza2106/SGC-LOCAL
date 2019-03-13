@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="layout">
+<head>
+<title>Registro de HC</title>
+</head>
+<body>
+	<div layout:fragment="content">
+
+		<!-- Page Heading -->
+		<div class="row">
+			<div class="col-lg-12">
+				<h1 class="page-header text-center">REGISTRO DE HISTORIA
+					CLINICA</h1>
+
+			</div>
+		</div>
+
+		<!--contenid-->
+		<div class="col-lg-12">
+
+
+
+			<p th:each="error : ${lstErrores}">
+				<span class="glyphicon glyphicon-exclamation-sign text-danger"
+					role="alert" aria-hidden="true"></span> <span class="sr-only">Error:</span>
+				<a class="text-danger nounderline" th:text="${error}"> </a>
+			</p>
+
+
+			<form class="form-horizontal" th:object="${historiaClinicaForm}"
+				th:action="@{/admin_cc/historias/registrarla}" method="post">
+
+				<div class="row">
+					<button type="submit" class="btn btn-md btn-primary pull-right">
+						<span class="glyphicon glyphicon-check"></span> Registrar</button>
+				</div>
+				<br/>
+				<div class="col-lg-3 col-lg-offset-1">
+					<div class="row">
+						<div class="panel panel-primary">
+							<div class="panel-heading">
+								<h3 class="panel-title">HISTORIA</h3>
+							</div>
+
+							<div class="panel-body">
+								<div class="form-group">
+									<label for="txtHistoria" class="col-lg-4 control-label">NUMERO:</label>
+									<div class="col-lg-6">
+
+										<input id="txtHistoria" type="text" class="form-control"
+											maxlength="5" th:field="*{historiaClinicaGeneralBO.nroHC}"
+											onkeypress="return soloNumeros(event)"></input>
+
+										<p
+											th:each="err : ${#fields.errors('historiaClinicaGeneralBO.nroHC')}">
+											<span
+												class="glyphicon glyphicon-exclamation-sign text-danger"
+												role="alert" aria-hidden="true"></span> <span
+												class="sr-only">Error:</span> <a
+												class="text-danger nounderline" th:text="${err}"> </a>
+										</p>
+									</div>
+								</div>
+								<div class="form-group">
+
+
+									<label for="fechaHistoria" class="col-lg-4 control-label">FECHA:</label>
+
+
+									<div class="col-lg-6">
+										<div class="input-group date" id="datepicker2">
+											<input class="form-control" type="text" id="fec"
+												name="fechaHistoria"
+												th:field="*{historiaClinicaGeneralBO.fechaHC}" /><span
+												class="input-group-addon"> <span
+												class="glyphicon glyphicon-calendar"></span>
+											</span>
+										</div>
+									</div>
+
+								</div>
+							</div>
+
+
+						</div>
+
+					</div>
+
+					<div class="row">
+						<div class="panel panel-primary">
+							<div class="panel-heading">
+								<h3 class="panel-title">CONTRATO</h3>
+							</div>
+							<div class="panel-body">
+								<div class="form-group">
+									<label for="txtContrato" class="col-lg-4 control-label">NUMERO:</label>
+									<div class="col-lg-6">
+										<input id="txtContrato" type="text" class="form-control"
+											maxlength="5"
+											th:field="*{historiaClinicaGeneralBO.nroContrato}"
+											onkeypress="return soloNumeros(event)"></input>
+
+										<p
+											th:each="err : ${#fields.errors('historiaClinicaGeneralBO.nroContrato')}">
+											<span
+												class="glyphicon glyphicon-exclamation-sign text-danger"
+												role="alert" aria-hidden="true"></span> <span
+												class="sr-only">Error:</span> <a
+												class="text-danger nounderline" th:text="${err}"> </a>
+										</p>
+
+
+									</div>
+								</div>
+
+
+								<div class="form-group">
+									<label for="fechaContrato" class="col-lg-4 control-label">FECHA:</label>
+
+									<div class="col-lg-6">
+										<div class="input-group date" id="datepicker3">
+											<input class="form-control" type="text" id="fechaContrato"
+												name="fechaContrato"
+												th:field="*{historiaClinicaGeneralBO.fechaContrato}" /><span
+												class="input-group-addon"> <span
+												class="glyphicon glyphicon-calendar"></span>
+											</span>
+										</div>
+									</div>
+
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="col-lg-7">
+
+					<div class="panel panel-primary">
+						<div class="panel-heading">
+							<h3 class="panel-title">PACIENTE</h3>
+						</div>
+						<div class="panel-body">
+							<div class="form-group">
+								<label for="txtDniPac" class="col-lg-3 control-label">DNI:</label>
+								<div class="col-lg-3">
+									<input id="txtDniPac" type="text" class="form-control"
+										maxlength="8"
+										th:field="*{historiaClinicaGeneralBO.dniPaciente}"
+										onkeypress="return soloNumeros(event)"></input>
+
+									<p
+										th:each="err : ${#fields.errors('historiaClinicaGeneralBO.dniPaciente')}">
+										<span class="glyphicon glyphicon-exclamation-sign text-danger"
+											role="alert" aria-hidden="true"></span> <span class="sr-only">Error:</span>
+										<a class="text-danger nounderline" th:text="${err}"> </a>
+									</p>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label for="txtApatPac" class="col-lg-3 control-label">APE.PATERNO:</label>
+								<div class="col-lg-6">
+									<input id="txtApatPac" type="text" class="form-control"
+										maxlength="55" onkeypress="return soloNombres(event)"
+										th:field="*{historiaClinicaGeneralBO.apellidoPatPaciente}"></input>
+
+									<p
+										th:each="err : ${#fields.errors('historiaClinicaGeneralBO.apellidoPatPaciente')}">
+										<span class="glyphicon glyphicon-exclamation-sign text-danger"
+											role="alert" aria-hidden="true"></span> <span class="sr-only">Error:</span>
+										<a class="text-danger nounderline" th:text="${err}"> </a>
+									</p>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label for="txtAmatPac" class="col-lg-3 control-label">APE.MATERNO:</label>
+								<div class="col-lg-6">
+									<input id="txtAmatPac" type="text" class="form-control"
+										maxlength="55" onkeypress="return soloNombres(event)"
+										th:field="*{historiaClinicaGeneralBO.apellidoMatPaciente}"></input>
+
+									<p
+										th:each="err : ${#fields.errors('historiaClinicaGeneralBO.apellidoMatPaciente')}">
+										<span class="glyphicon glyphicon-exclamation-sign text-danger"
+											role="alert" aria-hidden="true"></span> <span class="sr-only">Error:</span>
+										<a class="text-danger nounderline" th:text="${err}"> </a>
+									</p>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label for="txtNomPac" class="col-lg-3 control-label">NOMBRES:</label>
+								<div class="col-lg-6">
+									<input id="txtNomPac" type="text" class="form-control"
+										maxlength="55" onkeypress="return soloNombres(event)"
+										th:field="*{historiaClinicaGeneralBO.nombrePaciente}"></input>
+
+									<p
+										th:each="err : ${#fields.errors('historiaClinicaGeneralBO.nombrePaciente')}">
+										<span class="glyphicon glyphicon-exclamation-sign text-danger"
+											role="alert" aria-hidden="true"></span> <span class="sr-only">Error:</span>
+										<a class="text-danger nounderline" th:text="${err}"> </a>
+									</p>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label for="fechaNacimiento" class="col-lg-3 control-label">FECHA
+									NAC:</label>
+
+								<div class="col-lg-3">
+									<div class="input-group date" id="datepicker4">
+										<input class="form-control" type="text" id="fechaNacimiento"
+											name="fechaNacimiento"
+											th:field="*{datosPersonaBO.fechaNacimiento}" /><span
+											class="input-group-addon"> <span
+											class="glyphicon glyphicon-calendar"></span>
+										</span>
+									</div>
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="from-group">
+									<label class="col-lg-3 control-label">LUGAR DE NAC:</label>
+									<div class="col-lg-3">
+										<select class="form-control" th:name="selectorDepaNac"
+											th:id="selectorDepaNac"
+											onchange="getProvinciaPorDepa(this.id, 'selectorProvNac', 'selectorDistritoNac')">
+											<option>-DEPARTAMENTO-</option>
+											<option th:each="var : ${departamentos}"
+												th:value="${var.idDepartamento}" th:text="${var.nombre}"></option>
+										</select>
+									</div>
+									<div th:id="divSelectProvNac" class="col-lg-3">
+										<select class="form-control" th:name="selectorProvNac"
+											th:id="selectorProvNac"
+											onchange="getDistritoPorDepaProvincia('selectorDepaNac', this.id, 'selectorDistritoNac')">
+											<option>-PROVINCIA-</option>
+											<option th:each="var2 : ${provincias}"
+												th:value="${var2.idProvincia}" th:text="${var2.nombre}"></option>
+										</select>
+									</div>
+									<div class="col-lg-3">
+										<select class="form-control" th:name="selectorDistritoNac"
+											th:id="selectorDistritoNac"
+											th:field="*{datosPersonaBO.ubigeoNacimiento}">
+											<option value="-1">-DISTRITO-</option>
+											<option th:each="var : ${distritos}" th:text="${var.nombre}"></option>
+										</select>
+									</div>
+
+								</div>
+							</div>
+							<br />
+							<div class="row">
+								<div class="from-group">
+									<label class="col-lg-3 control-label">DOMICILIO:</label>
+									<div class="col-lg-3">
+										<select class="form-control" th:name="selectorDepaDom"
+											th:id="selectorDepaDom"
+											onchange="getProvinciaPorDepa(this.id, 'selectorProvDom', 'selectorDistritoDom')">
+											<option>-DEPARTAMENTO-</option>
+											<option th:each="var : ${departamentos}"
+												th:value="${var.idDepartamento}" th:text="${var.nombre}"></option>
+
+										</select>
+									</div>
+									<div th:id="divSelectProvDom" class="col-lg-3">
+										<select class="form-control" th:name="selectorProvDom"
+											th:id="selectorProvDom"
+											onchange="getDistritoPorDepaProvincia('selectorDepaDom', this.id, 'selectorDistritoDom')">
+											<option>-PROVINCIA-</option>
+											<option th:each="var2 : ${provincias}"
+												th:value="${var2.idProvincia}" th:text="${var2.nombre}"></option>
+										</select>
+									</div>
+									<div class="col-lg-3">
+										<select class="form-control" th:name="selectorDistritoDom"
+											th:id="selectorDistritoDom"
+											th:field="*{datosPersonaBO.ubigeoProcedencia}">
+											<option value="-1">-DISTRITO-</option>
+											<option th:each="var : ${distritos}" th:text="${var.nombre}"></option>
+										</select>
+									</div>
+								</div>
+							</div>
+							<br />
+							<div class="row"></div>
+							<div class="form-group">
+								<label for="txtDomPac" class="col-lg-3 control-label">DIRECCION:</label>
+								<div class="col-lg-6">
+									<input id="txtDomPac" type="text" class="form-control"
+										th:field="*{datosPersonaBO.domicilio}"></input>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="txtOcupPac" class="col-lg-3 control-label">OCUPACION:</label>
+								<div class="col-lg-6">
+									<input id="txtOcupPac" type="text" class="form-control"
+										th:field="*{datosPersonaBO.ocupacion}"></input>
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<label for="txtEmail" class="col-lg-3 control-label">EMAIL:</label>
+								<div class="col-lg-6">
+									<input id="txtEmail" type="text" class="form-control"
+										th:field="*{datosPersonaBO.email}"></input>
+									<p
+										th:each="err : ${#fields.errors('datosPersonaBO.email')}">
+										<span
+											class="glyphicon glyphicon-exclamation-sign text-danger"
+											role="alert" aria-hidden="true"></span> <span
+											class="sr-only">Error:</span> <a
+											class="text-danger nounderline" th:text="${err}"> </a>
+									</p>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label for="txtTelfPac" class="col-lg-3 control-label">TELEFONO:</label>
+								<div class="col-lg-3">
+									<input id="txtTelfPac" type="text" class="form-control"
+										maxlength="7" th:field="*{datosPersonaBO.telefonoFijo}"
+										onkeypress="return soloNumeros(event)" placeholder="NUM FIJO"></input>
+
+								</div>
+								<div class="col-lg-3">
+									<input id="txtTelfPac" type="text" class="form-control"
+										maxlength="9" th:field="*{datosPersonaBO.telefonoCelular}"
+										onkeypress="return soloNumeros(event)"
+										placeholder="NUM CELULAR"></input>
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="from-group">
+									<label for="selectorECPac" class="col-lg-3 control-label">ESTADO
+										CIVIL:</label>
+									<div class="col-lg-3">
+										<select id="selectorECPac" class="form-control"
+											th:field="*{datosPersonaBO.estadoCivil}">
+											<option value="SOLTERO">SOLTERO</option>
+											<option value="CASADO">CASADO</option>
+											<option value="VIUDO">VIUDO</option>
+											<option value="DIVORCIADO">DIVORCIADO</option>
+										</select>
+									</div>
+
+									<label for="rbtnSexPac" class="col-lg-1 control-label">SEXO:</label>
+									<div class="col-lg-3 radio">
+										<label> <input type="radio"
+											th:field="*{datosPersonaBO.sexo}" name="opciones"
+											id="rbtnSexPac" value="MASCULINO" checked="checked" /> M
+										</label> &nbsp; &nbsp; <label> <input type="radio"
+											th:field="*{datosPersonaBO.sexo}" name="opciones"
+											id="rbtnSexPac" value="FEMENINO" /> F
+										</label>
+									</div>
+								</div>
+							</div>
+
+
+						</div>
+
+					</div>
+
+				</div>
+
+
+				<!--  
+
+						<div class="form-group">
+							<label for="sandbox" class="col-lg-4 control-label">FECHA:</label>
+
+							<div class="col-lg-6">
+								<div class='input-group date' id="sandbox">
+									<input type='text' class="form-control"
+										th:field="*{historiaClinicaGeneralBO.fechaHC}" name="fecha" /> <span
+										class="input-group-addon"> <span
+										class="glyphicon glyphicon-calendar"></span>
+									</span>
+								</div>
+
+												
+								<div class='input-group date' id='datepicker2'>
+
+									<input type='text' class="form-control" name="fecha" /> <span
+										class="input-group-addon"> <span
+										class="glyphicon glyphicon-calendar"></span>
+									</span>
+								</div>
+							
+													
+						
+							</div>
+						</div>
+				-->
+
+
+			</form>
+
+			<div class="col-lg-4"></div>
+		</div>
+
+	</div>
+
+	<th:block layout:fragment="script">
+		<script type="text/javascript">
+			/*<![CDATA[*/
+			function getProvinciaPorDepa(idSelectDepa, idSelectProv,
+					idSelectDist) {
+				var selector = document.getElementById(idSelectDepa);
+				var idDepa = selector.options[selector.selectedIndex].value;
+
+				$
+						.get(
+								"registrar/provincias?idDepartamento=" + idDepa,
+								function(data) {
+									var optionProv = "<option value = -1>-PROVINCIA-</option>"
+									var optionDist = "<option value = -1>-DISTRITO-</option>"
+									$("#" + idSelectProv).empty();
+									$("#" + idSelectProv).append(optionProv);
+									data
+											.forEach(function(item, i) {
+												var option = "<option value = " + item.idProvincia + ">"
+														+ item.nombre
+														+ "</option>";
+												$("#" + idSelectProv).append(
+														option);
+											});
+									$("#" + idSelectDist).empty();
+									$("#" + idSelectDist).append(optionDist);
+								});
+			}
+
+			function getDistritoPorDepaProvincia(idSelectDepa, idSelectProv,
+					idSelectDist) {
+				var selectorDep = document.getElementById(idSelectDepa);
+				var idDepa = selectorDep.options[selectorDep.selectedIndex].value;
+
+				var selectorPro = document.getElementById(idSelectProv);
+				var idProv = selectorPro.options[selectorPro.selectedIndex].value;
+
+				$
+						.get(
+								"registrar/distritos?idDepartamento=" + idDepa
+										+ "&idProvincia=" + idProv,
+								function(data) {
+									var optionDist = "<option value = -1>-DISTRITO-</option>"
+									$("#" + idSelectDist).empty();
+									$("#" + idSelectDist).append(optionDist);
+
+									data
+											.forEach(function(item, i) {
+												var option = "<option value = " + item.idDepartamento +"/" + item.idProvincia
+					    		+"/" + item.idDistrito +">"
+														+ item.nombre
+														+ "</option>";
+												$("#" + idSelectDist).append(
+														option);
+											});
+								});
+			}
+
+			/*]]>*/
+		</script>
+		
+		<script type="text/javascript">
+			function validarEmail(valor) {
+				  if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3,4})+$/.test(valor)){
+				   alert("La dirección de email " + valor + " es correcta.");
+				  } else {
+				   alert("La dirección de email es incorrecta.");
+				  }
+			}
+		</script>
+
+	</th:block>
+</body>
+</html>

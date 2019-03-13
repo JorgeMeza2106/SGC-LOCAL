@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<title>Insert title here</title>
+
+<body>
+	<div th:fragment="resultList">
+
+		<div class="row">
+			<div class="col-lg-6">
+				<h3 th:text="${'Paciente: ' + listaCitasByHC[0].paciente}"></h3> 
+			</div>
+			<div class="col-lg-6">
+			   <h3 th:text="${'Contrato: ' + listaCitasByHC[0].contrato}"></h3> 
+			</div>
+		</div>
+
+
+			<table class="table table-striped" data-sort-name="name">
+				<thead>
+					<tr >
+						<th class="text-center" data-field="name" data-sortable="true">Numero</th>
+						<th class="text-center">Curso</th>
+						<th class="text-center" >Año</th>
+						<th class="text-center">Fecha</th>
+						<th class="text-center">Turno</th>
+						<th class="text-center">Clínica</th>
+						<th class="text-center">Tratamiento</th>
+					</tr>
+				</thead>
+
+				<tbody>
+					<tr th:each="cita, stat : ${listaCitasByHC}">
+						<td th:text="${stat.index + 1}"></td>
+						<td th:text="${cita.curso}"></td>
+						<td th:text="${cita.anio}"></td>
+						<td th:text="${cita.fecha}"></td>
+						<td th:text="${cita.turno}"></td>
+						<td th:text="${cita.clinica}"></td>
+						<td th:text="${cita.tratamiento}"></td>
+					</tr>
+				</tbody>
+			</table>
+		
+	</div>
+</body>
+</html>

@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+	layout:decorator="layout">
+<head>
+<title>Información HC</title>
+</head>
+<body>
+	<div layout:fragment="content">
+
+		<!-- Page Heading -->
+		<div class="row">
+			<div class="col-lg-12">
+				<h1 class="page-header text-center"
+					th:text="${#authorization.expression('hasRole(''ADMIN_CC'')')} ? 
+               'INFORMACIÓN DE HC - Central de Citas' : 
+               'INFORMACIÓN DE HC - Admisión de Diagnóstico'"></h1>
+			</div>
+		</div>
+
+		<!--contenid-->
+		<div class="col-lg-10 col-md-offset-1">
+			<div class="row">
+
+				<form class="form-horizontal" th:object="${historiaClinicaDetalle}"
+					th:action="@{${adminType}} + '/historias/modificar'" method="post">
+							
+<!-- 					th:action="${#authorization.expression('hasRole(''ADMIN_CC'')')} ? '@{/admin_cc/historias/modificar}'  -->
+<!-- 							: '@{/admin_ad/historias/modificar}'" method="post"> -->
+					<div class="row">
+
+						<div class="btn-group pull-right ">
+							<div class="col-sm-4">
+								<button id="btnEditar" class="btn btn-md btn-info "
+									data-toggle="tooltip" data-placement="top" title="Editar"
+									type="button">
+									<span class="glyphicon glyphicon-pencil"></span>
+
+								</button>
+							</div>
+							<div class="col-sm-4">
+								<button id="btnGuardar" class="btn btn-md btn-primary"
+									type="submit" disabled="disabled" data-toggle="tooltip"
+									data-placement="top" title="Guardar">
+									<span class="glyphicon glyphicon-floppy-saved"></span>
+								</button>
+							</div>
+							<div class="col-sm-4">
+								<button id="btnCancelar" class="btn btn-md btn-danger"
+									data-toggle="tooltip" disabled="disabled" data-placement="top"
+									title="Cancelar" type="button" th:onclick="'desactivarFila();'">
+									<span class="glyphicon glyphicon-remove"></span>
+								</button>
+							</div>
+						</div>
+					</div>
+					<br />
+					<div class="row">
+						<div class="col-lg-5">
+
+							<div class="panel panel-primary">
+								<div class="panel-heading">
+									<h3 class="panel-title">HISTORIA</h3>
+								</div>
+
+								<div class="panel-body">
+
+									<div class="form-group">
+										<label for="txtNroHistoria" class="col-lg-4 control-label">Número
+											de Historia:</label>
+										<div class="col-lg-6">
+											<input id="txtNroHistoria"
+												th:field="${historiaClinicaDetalle.datosGeneralesPaciente.nroHC}"
+												type="text" class="form-control" readonly="readonly"></input>
+
+											<p
+												th:each="err : ${#fields.errors('datosGeneralesPaciente.nroHC')}">
+												<span
+													class="glyphicon glyphicon-exclamation-sign text-danger"
+													role="alert" aria-hidden="true"></span> <span
+													class="sr-only">Error:</span> <a
+													class="text-danger nounderline" th:text="${err}"> </a>
+											</p>
+
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="txtNroContrato" class="col-lg-4 control-label">Número
+											de Contrato:</label>
+										<div class="col-lg-6">
+											<input id="txtNroContrato"
+												th:field="${historiaClinicaDetalle.datosGeneralesPaciente.nroContrato}"
+												type="text" class="form-control" readonly="readonly"></input>
+
+											<p
+												th:each="err : ${#fields.errors('datosGeneralesPaciente.nroContrato')}">
+												<span
+													class="glyphicon glyphicon-exclamation-sign text-danger"
+													role="alert" aria-hidden="true"></span> <span
+													class="sr-only">Error:</span> <a
+													class="text-danger nounderline" th:text="${err}"> </a>
+											</p>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="selectorFNPac" class="col-lg-4 control-label">Fecha
+											de Contrato:</label>
+										<div class="col-lg-6">
+											<div class='input-group' id="0">
+												<input type='text' class="form-control" name="fecha"
+													th:field="${historiaClinicaDetalle.datosGeneralesPaciente.fechaContrato}"
+													readonly="readonly" /> <span class="input-group-addon">
+													<span class="glyphicon glyphicon-calendar"></span>
+												</span>
+											</div>
+
+
+										</div>
+
+									</div>
+								</div>
+
+							</div>
+						</div>
+						<div class="col-lg-7">
+							<div class="panel panel-primary">
+								<div class="panel-heading">
+									<h3 class="panel-title">PACIENTE</h3>
+								</div>
+
+								<div class="panel-body" id="panelPac">
+									<div class="form-group">
+										<label for="txtDniPaciente" class="col-lg-3 control-label">DNI:</label>
+										<div class="col-lg-3">
+											<input id="txtDniPaciente"
+												th:field="${historiaClinicaDetalle.datosGeneralesPaciente.dniPaciente}"
+												type="text" class="form-control" readonly="readonly"></input>
+
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="selectorApatPac" class="col-lg-3 control-label">APE.PATERNO:</label>
+										<div class="col-lg-6">
+											<input id="selectorApatPac" type="text" maxlength="55"
+												onkeypress="return soloNombres(event)"
+												th:field="${historiaClinicaDetalle.datosGeneralesPaciente.apellidoPatPaciente}"
+												class="form-control"></input>
+
+											<p
+												th:each="err : ${#fields.errors('datosGeneralesPaciente.apellidoPatPaciente')}">
+												<span
+													class="glyphicon glyphicon-exclamation-sign text-danger"
+													role="alert" aria-hidden="true"></span> <span
+													class="sr-only">Error:</span> <a
+													class="text-danger nounderline" th:text="${err}"> </a>
+											</p>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="selectorAmatPac" class="col-lg-3 control-label">APE.MATERNO:</label>
+										<div class="col-lg-6">
+											<input id="selectorAmatPac" type="text" maxlength="55"
+												onkeypress="return soloNombres(event)"
+												th:field="${historiaClinicaDetalle.datosGeneralesPaciente.apellidoMatPaciente}"
+												class="form-control"></input>
+
+											<p
+												th:each="err : ${#fields.errors('datosGeneralesPaciente.apellidoMatPaciente')}">
+												<span
+													class="glyphicon glyphicon-exclamation-sign text-danger"
+													role="alert" aria-hidden="true"></span> <span
+													class="sr-only">Error:</span> <a
+													class="text-danger nounderline" th:text="${err}"> </a>
+											</p>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="selectorNomPac" class="col-lg-3 control-label">NOMBRES:</label>
+										<div class="col-lg-6">
+											<input id="selectorNomPac"
+												onkeypress="return soloNombres(event)" maxlength="55"
+												th:field="${historiaClinicaDetalle.datosGeneralesPaciente.nombrePaciente}"
+												type="text" class="form-control"></input>
+
+											<p
+												th:each="err : ${#fields.errors('datosGeneralesPaciente.nombrePaciente')}">
+												<span
+													class="glyphicon glyphicon-exclamation-sign text-danger"
+													role="alert" aria-hidden="true"></span> <span
+													class="sr-only">Error:</span> <a
+													class="text-danger nounderline" th:text="${err}"> </a>
+											</p>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="selectorFNPac" class="col-lg-3 control-label">FECHA
+											NAC.:</label>
+
+										<div class="col-lg-3">
+											<div class='input-group date' id="sandbox">
+												<input type='text' class="form-control"
+													th:field="${historiaClinicaDetalle.datosAdicionalesPaciente.fechaNacimiento}" />
+												<span class="input-group-addon"> <span
+													class="glyphicon glyphicon-calendar"></span>
+												</span>
+											</div>
+										</div>
+									</div>
+
+									<div class="row">
+										<div class="from-group">
+											<label class="col-lg-3 control-label">LUGAR DE NAC:</label>
+											<div class="col-lg-3">
+												<select class="form-control" th:name="selectorDepaNac"
+													th:id="selectorDepaNac"
+													onchange="getProvinciaPorDepa(this.id, 'selectorProvNac', 'selectorDistritoNac')">
+													<option>-DEPARTAMENTO-</option>
+													<option th:each="var : ${departamentos}"
+														th:value="${var.idDepartamento}" th:text="${var.nombre}"></option>
+												</select>
+											</div>
+											<div th:id="divSelectProvNac" class="col-lg-3">
+												<select class="form-control" th:name="selectorProvNac"
+													th:id="selectorProvNac"
+													onchange="getDistritoPorDepaProvincia('selectorDepaNac', this.id, 'selectorDistritoNac')">
+													<option>-PROVINCIA-</option>
+													<option th:each="var2 : ${provincias}"
+														th:value="${var2.idProvincia}" th:text="${var2.nombre}"></option>
+												</select>
+											</div>
+											<div class="col-lg-3">
+												<select class="form-control" th:name="selectorDistritoNac"
+													th:id="selectorDistritoNac"
+													th:field="*{datosAdicionalesPaciente.ubigeoNacimiento}">
+													<option value="-1">-DISTRITO-</option>
+													<option th:each="var : ${distritos}"
+														th:text="${var.nombre}"></option>
+												</select>
+											</div>
+
+										</div>
+									</div>
+									<br />
+									<div class="row">
+										<div class="from-group">
+											<label class="col-lg-3 control-label">DOMICILIO:</label>
+											<div class="col-lg-3">
+												<select class="form-control" th:name="selectorDepaDom"
+													th:id="selectorDepaDom"
+													onchange="getProvinciaPorDepa(this.id, 'selectorProvDom', 'selectorDistritoDom')">
+													<option>-DEPARTAMENTO-</option>
+													<option th:each="var : ${departamentos}"
+														th:value="${var.idDepartamento}" th:text="${var.nombre}"></option>
+
+												</select>
+											</div>
+											<div th:id="divSelectProvDom" class="col-lg-3">
+												<select class="form-control" th:name="selectorProvDom"
+													th:id="selectorProvDom"
+													onchange="getDistritoPorDepaProvincia('selectorDepaDom', this.id, 'selectorDistritoDom')">
+													<option>-PROVINCIA-</option>
+													<option th:each="var2 : ${provincias}"
+														th:value="${var2.idProvincia}" th:text="${var2.nombre}"></option>
+												</select>
+											</div>
+											<div class="col-lg-3">
+												<select class="form-control" th:name="selectorDistritoDom"
+													th:id="selectorDistritoDom"
+													th:field="*{datosAdicionalesPaciente.ubigeoProcedencia}">
+													<option value="-1">-DISTRITO-</option>
+													<option th:each="var : ${distritos}"
+														th:text="${var.nombre}"></option>
+												</select>
+											</div>
+										</div>
+									</div>
+									<br />
+									<div class="row"></div>
+
+									<div class="form-group">
+										<label for="direccion" class="col-lg-3 control-label">DIRECCION:</label>
+										<div class="col-lg-9">
+											<input id="direccion" type="text" maxlength="90"
+												onkeypress="return soloNombres(event)"
+												th:field="${historiaClinicaDetalle.datosAdicionalesPaciente.domicilio}"
+												class="form-control"></input>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="selectorOcupPac" class="col-lg-3 control-label">OCUPACION:</label>
+										<div class="col-lg-6">
+											<input id="selectorOcupPac" type="text" maxlength="90"
+												onkeypress="return soloNombres(event)"
+												th:field="${historiaClinicaDetalle.datosAdicionalesPaciente.ocupacion}"
+												class="form-control"></input>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="txtEmail" class="col-lg-3 control-label">EMAIL:</label>
+										<div class="col-lg-6">
+											<input id="txtEmail" type="text" class="form-control" maxlength="65"
+												th:field="${historiaClinicaDetalle.datosAdicionalesPaciente.email}"></input>
+											<p
+												th:each="err : ${#fields.errors('datosAdicionalesPaciente.email')}">
+												<span
+													class="glyphicon glyphicon-exclamation-sign text-danger"
+													role="alert" aria-hidden="true"></span> <span
+													class="sr-only">Error:</span> <a
+													class="text-danger nounderline" th:text="${err}"> </a>
+											</p>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="selectorTelfPac" class="col-lg-3 control-label">TELEFONO:</label>
+										<div class="col-lg-3">
+											<input id="selectorTelfPac" type="text"
+												onkeypress="return soloNumeros(event)" maxlength="7"
+												th:field="${historiaClinicaDetalle.datosAdicionalesPaciente.telefonoFijo}"
+												class="form-control" placeholder="NUM FIJO"></input>
+										</div>
+										<div class="col-lg-3">
+											<input id="selectorTelfPac" type="text"
+												onkeypress="return soloNumeros(event)" maxlength="9"
+												th:field="${historiaClinicaDetalle.datosAdicionalesPaciente.telefonoCelular}"
+												class="form-control" placeholder="NUM CELULAR"></input>
+										</div>
+									</div>
+
+									<div class="row">
+										<div class="from-group">
+											<label for="selectorECPac" class="col-lg-3 control-label">ESTADO
+												CIVIL:</label>
+											<div class="col-lg-3">
+												<select id="selectorECPac" class="form-control"
+													th:field="${historiaClinicaDetalle.datosAdicionalesPaciente.estadoCivil}">
+													<option value="SOLTERO">SOLTERO</option>
+													<option value="CASADO">CASADO</option>
+													<option value="VIUDO">VIUDO</option>
+													<option value="DIVORCIADO">DIVORCIADO</option>
+												</select>
+											</div>
+
+										</div>
+
+										<div class="from-group">
+
+											<label for="selectorSexPac" class="col-lg-1 control-label">SEXO:</label>
+											<div class="col-lg-3 radio">
+												<label> <input type="radio"
+													th:field="${historiaClinicaDetalle.datosAdicionalesPaciente.sexo}"
+													name="opciones" id="rbtnSexPac" value="MASCULINO"
+													checked="checked" /> M
+												</label> &nbsp; &nbsp; <label> <input type="radio"
+													th:field="${historiaClinicaDetalle.datosAdicionalesPaciente.sexo}"
+													name="opciones" id="rbtnSexPac" value="FEMENINO" /> F
+												</label>
+											</div>
+										</div>
+									</div>
+
+								</div>
+
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+
+
+	<th:block layout:fragment="script">
+		<script type="text/javascript">
+		/*<![CDATA[*/
+			function getProvinciaPorDepa(idSelectDepa, idSelectProv, idSelectDist) {
+				var selector = document.getElementById(idSelectDepa);
+				var idDepa = selector.options[selector.selectedIndex].value;	
+				
+				$.get( "provincias?idDepartamento=" + idDepa, function( data ) {	
+						var optionProv = "<option value = -1>-PROVINCIA-</option>"
+						var optionDist = "<option value = -1>-DISTRITO-</option>"
+						$("#"+idSelectProv).empty();						
+						$("#"+idSelectProv).append(optionProv);
+					    data.forEach(function(item, i) {					    	
+					    	var option = "<option value = " + item.idProvincia + ">" + item.nombre +  "</option>";					   
+					    	$("#"+idSelectProv).append(option);
+					    });
+					    $("#"+idSelectDist).empty();
+					    $("#"+idSelectDist).append(optionDist);
+				});			
+			}
+			
+			function getDistritoPorDepaProvincia(idSelectDepa, idSelectProv, idSelectDist) {
+				var selectorDep = document.getElementById(idSelectDepa);
+				var idDepa = selectorDep.options[selectorDep.selectedIndex].value;	
+				
+				var selectorPro = document.getElementById(idSelectProv);
+				var idProv = selectorPro.options[selectorPro.selectedIndex].value;					
+				
+				$.get( "distritos?idDepartamento=" + idDepa + "&idProvincia=" + idProv, function( data ) {					
+					var optionDist = "<option value = -1>-DISTRITO-</option>"
+						$("#"+idSelectDist).empty();						
+						$("#"+idSelectDist).append(optionDist);
+					    data.forEach(function(item, i) {
+					    	var option = "<option value = " + item.idDepartamento +"/" + item.idProvincia
+					    		+"/" + item.idDistrito +">" + item.nombre +  "</option>";
+					    	$("#"+idSelectDist).append(option);
+					    });
+				});
+			}
+			
+			/*]]>*/
+		</script>
+
+		<script th:inline="javascript">
+		/*<![CDATA[*/
+		           
+		    var error = /*[[${error}]]*/;		           
+			//Id's de los selectores 
+			var idSDepaNac = "selectorDepaNac", idSProvNac = "selectorProvNac", idSDistNac = "selectorDistritoNac";			
+			var idSDepaPro = "selectorDepaDom", idSProvPro = "selectorProvDom", idSDistPro = "selectorDistritoDom";
+		           
+			var depas = /*[[${departamentos}]]*/;
+			var provNac = /*[[${provinciasNac}]]*/;
+			var distNac = /*[[${distritosNac}]]*/;
+			var provPro = /*[[${provinciasPro}]]*/;
+			var distPro = /*[[${distritosPro}]]*/;
+			
+			var ubigeoNac = /*[[${historiaClinicaDetalle.datosAdicionalesPaciente.ubigeoNacimiento}]]*/;
+			var ubigeoPro = /*[[${historiaClinicaDetalle.datosAdicionalesPaciente.ubigeoProcedencia}]]*/;
+			
+			for(i = 0; i < depas.length; i++){
+				var optionNac = "<option value = " + depas[i].idDepartamento + ">" + depas[i].nombre +  "</option>";
+				var optionPro = "<option value = " + depas[i].idDepartamento + ">" + depas[i].nombre +  "</option>";
+		    	$("#"+idSDepaNac).append(optionNac);
+		    	$("#"+idSDepaPro).append(optionPro);
+			}
+			if (ubigeoNac != null && ubigeoNac != "-1") {
+				var fieldsNac = ubigeoNac.split("/");
+				document.getElementById(idSDepaNac).value = fieldsNac[0];
+				
+				for(i = 0; i < provNac.length; i++){
+					var option = "<option value = " + provNac[i].idProvincia + ">" + provNac[i].nombre +  "</option>";					   
+			    	$("#"+idSProvNac).append(option);
+				}			
+				document.getElementById(idSProvNac).value = fieldsNac[1];
+				
+				for(i = 0; i < distNac.length; i++){
+					var option = "<option value = " + distNac[i].idDepartamento + "/" + distNac[i].idProvincia
+							+ "/" + distNac[i].idDistrito + ">" + distNac[i].nombre +  "</option>";					   
+			    	$("#"+idSDistNac).append(option);
+				}			
+				document.getElementById(idSDistNac).value = ubigeoNac;
+			}
+			
+			if (ubigeoPro != null && ubigeoPro != "-1") {
+				var fieldsPro = ubigeoPro.split("/");
+				document.getElementById(idSDepaPro).value = fieldsPro[0];
+				
+				for(i = 0; i < provPro.length; i++){
+					var option = "<option value = " + provPro[i].idProvincia + ">" + provPro[i].nombre +  "</option>";					   
+			    	$("#"+idSProvPro).append(option);
+				}			
+				document.getElementById(idSProvPro).value = fieldsPro[1];
+				
+				for(i = 0; i < distPro.length; i++){
+					var option = "<option value = " + distPro[i].idDepartamento + "/" + distPro[i].idProvincia
+					+ "/" + distPro[i].idDistrito + ">" + distPro[i].nombre +  "</option>";					   
+			    	$("#"+idSDistPro).append(option);
+				}			
+				document.getElementById(idSDistPro).value = ubigeoPro;
+			}
+			if (error) {
+				$('#panelPac').find('input, select').each(function (indice, elemento) {     					
+			        $(this).prop('disabled', false);;        
+			      });
+			}else{
+				$('#panelPac').find('input, select').each(function (indice, elemento) {        
+			        $(this).prop('disabled', true);;        
+			      });
+			}
+				
+		/*]]>*/
+		</script>
+
+		<script th:inline="javascript">
+		  $("#btnEditar").on("click",function(){  
+		      $('#panelPac').find('input, select').each(function (indice, elemento) {        
+		        $(this).prop('disabled', false);;        
+		      });		      
+		      $("#btnGuardar").prop('disabled', false);;
+		  });
+		  
+		  $("input, select").change(function(){
+				$("#btnCancelar").prop('disabled', false);;
+			});
+		  
+		  $("#btnCancelar").on("click", function(){
+			  location.reload();
+		  });
+		</script>
+
+	</th:block>
+</body>
+</html>
+
+
+
+

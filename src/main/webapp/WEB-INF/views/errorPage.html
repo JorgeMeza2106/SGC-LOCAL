@@ -1,0 +1,26 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="layout">
+<head lang="en">
+<title>Error</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+	-
+	<div layout:fragment="content">
+
+		<div class="row">
+			<div class="col-lg-5">
+				<img th:src="@{/resources/img/error.png}"
+					height="300" width="600"> </img>
+			</div>
+			<div class="col-lg-7">
+				<h1>Ups! La URL a la que quiere acceder no esta disponible.</h1>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

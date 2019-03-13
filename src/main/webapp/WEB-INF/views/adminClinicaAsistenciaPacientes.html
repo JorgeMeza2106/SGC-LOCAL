@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="layout">
+<head>
+<title>Pacientes</title>
+</head>
+
+<body>
+	<div layout:fragment="content">
+
+		<!-- Page Heading -->
+		<div class="row">
+			<div class="col-lg-12">
+				<h2 class="page-header text-center">PACIENTES - Admisión de
+					Clínica</h2>
+			</div>
+		</div>
+
+		<!-- /.row -->
+		<div class="row">
+
+			<div class="col-lg-12">
+				<div class="form-group" align="right">
+					<form id="formExcel" th:action="@{/admin_cl/pacientes/exportar}" method="post">
+						<input type="hidden" name="fecha_excel" th:value="${date}" /> <input
+							type="hidden" name="turno_excel" value="${turno}" /> <input
+							type="hidden" name="clinica_excel" value="${clini}" />
+						<button class="btn btn-sm btn-success" type="button"
+							onclick="parametrosExcel()">
+							<span class="glyphicon glyphicon-floppy-save"></span> &nbsp;
+							Generar Excel
+						</button>
+					</form>
+				</div>
+
+				<div class="panel panel-primary">
+					<div class="panel-heading">
+						<h3 class="panel-title">
+							<a data-toggle="collapse" data-parent="#accordion"
+								href="#collapseOne">BÚSQUEDA</a>
+						</h3>
+
+					</div>
+					<div id="collapseOne" class="panel-body collapse ">
+
+
+						<div class="row">
+							<form id="consultaCitas" class="consultaCitas" method="GET">
+								<div class='col-md-2'>
+									<div class="form-group">
+										<div class="input-group date" id='datepicker1'>
+											<input type='text' class="form-control" th:id="fechaAtencion"
+												th:name="fechaAtencion" placeholder="Fecha" /> <span
+												class="input-group-addon"> <span
+												class="glyphicon glyphicon-calendar"></span>
+											</span>
+										</div>
+									</div>
+									<div class="form-group">
+										<input class="form-control" type="text" th:name="numeroHC"
+											th:id="numeroHC" placeholder="N° HC..." maxlength="5"
+											onkeypress="return soloNumeros(event)"></input>
+									</div>
+
+								</div>
+
+								<div class="col-md-2">
+									<div class="form-group">
+										<select class="form-control" th:name="turno" th:id="turno"
+											onchange="sombreaSelect(this.id)">
+											<option th:value="O">Seleccione turno</option>
+											<option th:value="M">Mañana</option>
+											<option th:value="T">Tarde</option>
+										</select>
+									</div>
+									<div class="form-group">
+										<input class="form-control" type="text"
+											th:name="numeroContrato" th:id="numeroContrato"
+											placeholder="N° contrato..." maxlength="5"
+											onkeypress="return soloNumeros(event)"></input>
+									</div>
+								</div>
+
+								<div class="col-md-2">
+									<div class="form-group">
+										<select class="form-control" th:name="idClinica"
+											th:id="idClinica" onchange="sombreaSelect(this.id)">
+											<option th:value="${-1}">Seleccione clinica</option>
+											<option th:each="clinica : ${clinicas}"
+												th:value="${clinica.idClinica}" th:text="${clinica.nombre}"></option>
+										</select>
+									</div>
+									<div class="form-group">
+										<input class="form-control" type="text" th:name="dniPaciente"
+											th:id="dniPaciente" placeholder="D.N.I paciente...."
+											maxlength="8" onkeypress="return soloNumeros(event)"></input>
+									</div>
+								</div>
+
+								<div class="col-md-2">
+									<div class="form-group">
+										<select class="form-control" th:id="idCurso" th:name="idCurso"
+											onchange="sombreaSelect(this.id)">
+											<option th:value="-1">Seleccione curso</option>
+											<option th:each="curso : ${cursos}"
+												th:value="${curso.idCurso}" th:text="${curso.nombre}"></option>
+										</select>
+									</div>
+									<div class="form-group">
+										<input class="form-control" type="text"
+											th:name="codigoOperador" th:id="codigoOperador"
+											placeholder="Codigo alumno...." maxlength="8"
+											onkeypress="return soloNumeros(event)"></input>
+									</div>
+								</div>
+							</form>
+
+							<div class="col-md-2">
+
+
+
+								<div class="form-group">
+									<input type="hidden" name="recita" value="false" />
+									<button onclick="realizarConsulta()"
+										class="btn btn-sm btn-primary">
+										<span class="glyphicon glyphicon-search"></span> &nbsp; Buscar
+									</button>
+								</div>
+							</div>
+							<br />
+						</div>
+					</div>
+				</div>
+				<div id="panelResultadoBusquedaPaciente">
+					<div
+						th:replace="template/fragments/fragmentosPaciente :: resultadoBusquedaPacientes"></div>
+				</div>
+			</div>
+
+
+			<div align="center"></div>
+
+		</div>
+	</div>
+
+
+
+	<th:block layout:fragment="script">
+		<script type="text/javascript">
+		/*<![CDATA[*/
+			var parametros,  consultaCitas; 
+			function realizarConsulta() {
+				console.log("bo: "+$("#consultaCitas").serialize());
+				$('#panelResultadoBusquedaPaciente').load('buscar',
+						$("#consultaCitas").serialize(), function(data){
+					$('#tabla').DataTable({
+				    	"scrollY":     "400px",
+				    	"language" : {
+				    		"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"				
+						}
+				    
+				    });
+					parametros = {
+							"pFechaAtencion" : $("#fechaAtencion").val(),
+							"pTurno" : $("#turno").find(":selected").text(),
+							"pClinica" : $("#idClinica").find(":selected").text()
+					}
+					console.log("parametros: "+ JSON.stringify(parametros));
+				});				
+				consultaCitas = {
+					"fechaAtencion" : $("#fechaAtencion").val(),
+					"numeroHC" : $("#numeroHC").val(),
+					"turno" : $("#turno").val(),
+					"numeroContrato" : $("#numeroContrato").val(),
+					"idClinica" : $("#idClinica").val(),
+					"dniPaciente" : $("#dniPaciente").val(),
+					"idCurso" : $("#idCurso").val(),
+					"codigoOperador" : $("#codigoOperador").val()
+				}				
+			}
+
+			function parametrosExcel() {
+				var csrf = $('meta[name=_csrf]').attr("content");
+				var form = $("#formExcel");
+				var finalObject = {}
+				$.extend(finalObject, consultaCitas, parametros);
+				url = "/SGC/admin_cl/pacientes/exportar?"
+						+ $.param(finalObject || '');
+				console.log("finalObject: "+ JSON.stringify(finalObject));			
+				console.log("URL: " + url);
+				form.attr('action', url);
+				form.submit();
+			}
+			/*]]>*/  
+		</script>
+
+		<script type="text/javascript">
+			function sombreaSelect(id) {
+				var option = document.getElementById(id).value;
+				//<![CDATA[					
+				var sel = document.getElementById(id);
+				sel.addEventListener('click',function(el) {
+							if (option != -1 && option != 'O') {
+								document.getElementById(id).style.backgroundColor = '#CEE3F6';
+								var options = this.children;
+								for (var i = 0; i < this.childElementCount; i++) {
+									options[i].style.backgroundColor = 'white';
+								}
+								var selected = this.children[this.selectedIndex];
+								selected.style.backgroundColor = '#CEE3F6';
+							} else {
+								document.getElementById(id).style.backgroundColor = 'white';
+							}
+						}, false);
+				realizarConsulta();
+			//]]>
+
+			}
+		</script>
+		<script type="text/javascript">
+			function registrarAsistencia(cita, clinica, paciente) {
+				var consultaCitas = {
+					fechaAtencion : $("#fechaAtencion").val(),
+					numeroHC : $("#numeroHC").val(),
+					turno : $("#turno").val(),
+					numeroContrato : $("#numeroContrato").val(),
+					idClinica : $("#idClinica").val(),
+					dniPaciente : $("#dniPaciente").val(),
+					idCurso : $("#idCurso").val(),
+					codigoOperador : $("#codigoOperador").val()
+				}
+				var asistencia = {
+					idCitaAsistencia : cita,
+					idClinicaAsistencia : clinica,
+					dniPersonaAsistencia : paciente
+				};
+				var finalObject = {}
+				$.extend(finalObject, consultaCitas, asistencia);
+				$('#panelResultadoBusquedaPaciente').load(
+						'registrarAsistencia?' + $.param(finalObject),
+						function() {
+							console.log("callback");
+						});
+			}
+		</script>
+
+	</th:block>
+
+
+</body>
+</html>

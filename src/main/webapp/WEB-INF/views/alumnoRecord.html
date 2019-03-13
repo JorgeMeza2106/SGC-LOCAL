@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="layout">
+<head>
+<title>Record del Alumno</title>
+</head>
+<body>
+	<div layout:fragment="content">
+
+		<!-- Page Heading -->
+		<div class="row">
+			<div class="col-lg-12">
+				<h1 class="page-header text-center">RECORD DE ALUMNO</h1>
+				
+			</div>
+		</div>
+
+		<!--contenid-->
+
+		<table class="table table-striped" data-sort-name="name">
+			<thead>
+				<tr>
+					<td class="text-center" colspan="3">Tratamiento</td>
+					<td class="text-center" colspan="3">Cantidad de Trat.</td>
+					<td class="text-center" colspan="3">Montos</td>
+				</tr>
+				<tr>
+					<th data-field="name" data-sortable="true">Numero</th>
+					<th>Nombre</th>
+					<th>Precio</th>
+					<th>Pago</th>
+					<th>Deuda</th>
+					<th>Total</th>
+					<th>Pago</th>
+					<th>Deuda</th>
+					<th>Total</th>
+				</tr>
+			</thead>
+
+			<tfoot>
+				<tr>
+					<th></th>
+					<th></th>
+					<th></th>
+					<th></th>
+					<th></th>
+					<th></th>
+					<th th:text="'S/. '+${total_pagos}"></th>
+					<th th:text="'S/. '+${total_deudas}"></th>
+					<th th:text="'S/. '+${total}"></th>
+				</tr>
+			</tfoot>
+			<tbody>
+				<tr th:each="t, stat : ${record}">
+					<td th:text="${stat.index + 1}"></td>
+					<td th:text="${t.nombreTratamiento}"></td>
+					<td th:text="${t.precioTratamiento}"></td>
+					<td th:text="${t.pago_cantidad}"></td>
+					<td th:text="${t.debe_cantidad}"></td>
+					<td th:text="${t.total_cantidad}"></td>
+					<td th:text="${t.pago}"></td>
+					<td th:text="${t.debe}"></td>
+					<td th:text="${t.monto}"></td>
+				</tr>
+			</tbody>
+
+
+		</table>
+
+
+		<!--
+       Tratamientos realizados por mi...  costo    Pagados,  monto  Falta Pagar,  monto    TOTAL    MONTO TOTAL      
+		A								               3                1             5       4         500              
+		B								               2                3             6       5         600   
+		C								                                6             6                 800
+		D								                                7             4 
+		
+		             Validos para  el record:         50
+		  -->
+
+
+		<div class="row">
+			<div class="col-lg-4"></div>
+			<div class="col-lg-4">
+				<div class="panel panel-yellow">
+					<div class="panel-heading">
+						<h3 class="panel-title">
+							<i class="fa fa-long-arrow-right"></i> Resumen Gráfico
+						</h3>
+					</div>
+					<div class="panel-body">
+						<div id="morris-donut-chart"></div>
+
+					</div>
+				</div>
+			</div>
+			<div class="col-lg-4"></div>
+		</div>
+		<!-- /.row -->
+	</div>
+
+	<th:block layout:fragment="script">
+		<script th:inline="javascript">
+		 /*<![CDATA[*/
+	    Morris.Donut({
+	        element: 'morris-donut-chart',
+	        data: [{
+	            label: "DEUDA (S/.)",
+	            value: [[${total_deudas}]]
+	        }, {
+	            label: "PAGO (S/.)",
+	            value: [[${total_pagos}]]
+	        }],
+	        resize: true
+	    });
+	    /*]]>*/
+		</script>
+		
+	
+	</th:block>
+</body>
+
+
+
+</html>

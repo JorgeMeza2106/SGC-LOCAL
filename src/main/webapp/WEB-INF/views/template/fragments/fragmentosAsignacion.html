@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<body>
+	<div th:fragment="panelOperadores">
+		<div class="box box-primary">
+			<div class="box-header with-border text-left">
+				<h3 class="box-title">OPERADORES</h3>
+			</div>
+			<div class="box-body box-profile">				
+				<div class="row">
+					<div class="col-md-3">
+						<div class="form-group">
+							<select class="form-control" th:name="idClinica"
+								th:id="idClinica" onchange="sombreaSelect(this.id)">
+								<option th:value="${-1}">Seleccione clinica</option>
+								<option th:each="clinica : ${clinicas}"
+									th:value="${clinica.idClinica}" th:text="${clinica.nombre}"></option>
+							</select>
+						</div>
+					</div>
+					<div class="col-md-3">
+						<div class="form-group">
+							<select class="form-control" th:name="dia" th:id="dia"
+								onchange="sombreaSelect(this.id)">
+								<option th:value="${-1}">Seleccione dia</option>
+								<option th:value="LUNES">LUNES</option>
+								<option th:value="MARTES">MARTES</option>
+								<option th:value="MIERCOLES">MIERCOLES</option>
+								<option th:value="JUEVES">JUEVES</option>
+								<option th:value="VIERNES">VIERNES</option>
+								<option th:value="SABADO">SABADO</option>
+							</select>
+						</div>
+					</div>
+					<div class="col-md-3">
+						<div class="form-group">
+							<select class="form-control" th:name="turno" th:id="turno"
+								onchange="sombreaSelect(this.id)">
+								<option th:value="${-1}">Seleccione turno</option>
+								<option th:each="turno : ${turnos}"
+									th:value="${turno.descripcion}" th:text="${turno.descripcion}"></option>
+							</select>
+						</div>
+					</div>					
+				</div>
+				<div id="resultadoOperadores">					
+					<div
+						th:include="template/fragments/fragmentosAsignacion :: resultadoBusqueda"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div th:fragment="resultadoBusqueda">		
+		<input th:id="doctor" th:type="hidden" th:value="${doctor}"></input>
+		<div class="row table-responsive">
+			<div class="table-responsive col-md-12">
+				<table class="table table-bordered table-hover " id="tabla"
+					data-sort-name="name">
+					<thead>
+						<tr class="info">
+							<th data-field="name" data-sortable="true"></th>
+							<th>Codigo</th>
+							<th>Operador</th>
+							<th>Celular</th>
+							<th>Email</th>
+							<th>Asignar</th>
+							<th>Pacientes</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="operador, stat : ${operadores}">
+							<td th:text="${stat.index + 1}"></td>
+							<td th:text="${operador.codigo}"></td>
+							<td th:text="${operador.nombre}"></td>
+							<td th:text="${operador.celular}"></td>
+							<td th:text="${operador.email}"></td>
+							<td>
+								<button class="btn btn-xs btn-info" th:onclick="'asignar(\'' + ${operador.codigo}  + '\', \'' + ${operador.nombre}  + '\');'">
+									<span class="glyphicon glyphicon-saved"></span> &nbsp;
+								</button>
+							</td>
+							<td>
+								<button class="btn btn-xs btn-success"
+									th:onclick="'getPacientes(\'' + ${operador.codigo}  + '\', \'' + ${operador.nombre}  + '\');'"
+									data-toggle="modal" data-target="#modalPacientes"
+									title="Pacientes">
+									<span class="glyphicon glyphicon-search"></span> &nbsp;
+								</button>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+
+	<div th:fragment="resultadoPacientes">
+		<div class="row table-responsive">
+			<div class="table-responsive col-md-12">
+				<table class="table table-bordered table-hover " id="tabla"
+					data-sort-name="name">
+					<thead>
+						<tr class="info">
+							<th data-field="name" data-sortable="true"></th>
+							<th>Nº HC</th>
+							<th>Contrato</th>
+							<th>DNI</th>
+							<th>A. Paterno</th>
+							<th>A. Materno</th>
+							<th>Nombre</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="asignado, stat : ${asignados}">
+							<td th:text="${stat.index + 1}"></td>
+							<td th:text="${asignado.datosHistoria.nroHC}"></td>
+							<td th:text="${asignado.datosHistoria.nroContrato}"></td>
+							<td th:text="${asignado.datosHistoria.dniPaciente}"></td>
+							<td th:text="${asignado.datosHistoria.apellidoPatPaciente}"></td>
+							<td th:text="${asignado.datosHistoria.apellidoMatPaciente}"></td>
+							<td th:text="${asignado.datosHistoria.nombrePaciente}"></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

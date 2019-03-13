@@ -1,0 +1,407 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" lang="es"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+</head>
+<body>
+
+	<!-- JQuery -->
+	<script th:src="@{/resources/js/jquery.js}"></script>
+	
+	<!-- jQuery Form -->
+	<script th:src="@{/resources/js/jquery.form.min.js}"></script>
+	<!-- Bootstrap Core JavaScript -->
+	<script th:src="@{/resources/js/bootstrap.min.js}"></script>
+	<!-- Datables -->
+	<script th:src="@{/resources/filtros/jquery.dataTables.min.js}"></script>
+	<script th:src="@{/resources/filtros/dataTables.bootstrap.min.js}"></script>
+	<script th:src="@{/resources/js/fnFindCellRowIndexes.js}"></script>
+	<!-- Datepicker -->
+	<script th:src="@{/resources/calendario/bootstrap-datepicker.js}"></script>
+
+	<script th:src="@{/resources/fileImput/fileinput.min.js}"></script>
+
+	<!-- Para notificaciones -->
+	<script th:src="@{/resources/js/bootstrap-notify.js}"></script>
+	
+	<!-- Reloj Digital -->
+	<script th:src="@{/resources/js/typeahead.jquery.js}"></script>
+	<script th:src="@{http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js}"></script>
+	<script th:src="@{/resources/js/plugins/digital-clock/digital-clockv1.js}"></script>
+	
+	<!-- Validaciones -->
+	<script type="text/javascript" th:src="@{/resources/js/validation/jquery.validate.js}"></script>
+	<script type="text/javascript" th:src="@{/resources/js/validation/additional-methods.js}"></script>
+	<script type="text/javascript" th:src="@{/resources/js/validation/custom-methods.js}"></script>
+	<script type="text/javascript" th:src="@{/resources/js/validation/validator-util.js}"></script>
+	<script type="text/javascript" th:src="@{/resources/js/validation/messages_es_PE.js}"></script>
+	
+	<!-- Full Calendar -->+
+	<!--  <script type="text/javascript" th:src="@{/resources/js/moment.min.js}"></script> -->
+	<script type="text/javascript" th:src="@{/resources/js/fullcalendar.js}"></script>
+	<script type="text/javascript" th:src="@{/resources/js/es.js}"></script>
+	
+	<script type="text/javascript">
+	$(document).ready(function() {
+		
+		console.log("whao");
+		var table = $('#tabla').DataTable({
+			//"scrollX": true,
+	    	"scrollY":     "400px",
+	    	"language" : {
+	    		"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+// 				"lengthMenu" : "Desplegar _MENU_ filas por pagina",
+// 				"zeroRecords" : "No hay resultados",
+// 				"info" : "Mostrando pagina _PAGE_ de _PAGES_",
+// 				"infoEmpty" : "No hay filas disponibles",
+// 				"infoFiltered" : "(Filtrado de _MAX_ total registros)",
+// 				"search" : "Buscar:",
+// 				"previous" : "Anterior",
+// 				"next" : "Siguiente"				
+			}
+	    
+	    });
+		
+	   /*
+		table.on('order.dt search.dt', function() {
+			table.column(0, {
+				search : 'applied',
+				order : 'applied'
+			}).nodes().each(function(cell, i) {
+				cell.innerHTML = i + 1;
+			});
+		}).draw();
+		*/
+	    //table.columns.adjust().draw();
+		
+	 
+	    
+	} 
+	
+	);
+	</script>
+	
+		<script>
+        $(document).ready(function(){
+            $('#calendar').fullCalendar({
+                header:{
+                    // se puede usar left y right
+                    // center: 'MiBoton',
+                    right:'today, prev, next, basicDay, month'
+                },
+                /*
+                customButtons:{
+                    MiBoton:{
+                        text: "Pruebita",
+                        click: function(){
+                                alert("Boton creado de prueba");
+                            }
+                    }
+                }
+                */
+                dayClick: function(date, jsEvent, view){
+                    alert(date.format());
+                    alert(view.name);
+                    $(this).css("background-color","red");
+                    //$("#exampleModal").modal();
+                },
+                eventClick: function(calEvent, jsEvent, view){
+                    //$("#title-modal").html(calEvent.title);
+                    //$("#descripcion-modal").html(calEvent.descripcion);
+                    //$("#exampleModal").modal();
+                },
+                eventSources:[{
+                    events:[
+                        {
+                            title: 'Evento 1',
+                            descripcion: "Con fe amigos",
+                            start: '2019-03-02',
+                            color: "green",
+                            textColor: "white"
+                        },
+                        {
+                            title: 'Evento 2',
+                            descripcion: "Juego de tronos temporada final",
+                            start: '2019-03-03',
+                            end: '2019-03-05'
+                        },
+                        {
+                            title: 'Evento 3',
+                            descripcion: "Los siete pecados capitales",
+                            start: '2019-03-07T12:30:00',
+                            allDay: false
+                        }
+                    ],
+                    //sino se declara parametros en cada event,toma en cuenta los parametros generales
+                    //para colores tambien se puede usar hexadecimal
+                    color: "black",
+                    textColor: "yellow"
+                }]
+                
+            })
+        });
+    </script>
+	
+	   <script>
+	    $(document).ready(function(){
+	        $('[data-toggle="tooltip"]').tooltip();
+	    });
+	    </script>
+
+	<script type="text/javascript">
+	$(document).ready(function() {
+		var table =  $('#tablaHC').DataTable({
+			"scrollX": true,
+	    	"scrollY":     "400px",
+	    		"language" : {
+	    			"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+				}					    	
+	    });
+	    
+	    table.columns.adjust().draw();
+	} );
+	$(document).ready(function() {
+		var table =  $('#tablaCajaHC').DataTable({			
+	    	"scrollY":     "400px",
+	    		"language" : {
+	    			"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+				},
+				"columnDefs": [
+				               { "width": "10%", "targets": 0 },
+				               { "width": "10%", "targets": 1 },
+				               { "width": "10%", "targets": 2 },
+				               { "width": "20%", "targets": 3 },
+				               { "width": "20%", "targets": 4 },
+				               { "width": "20%", "targets": 5 },
+				               { "width": "10%", "targets": 6 }
+				             ],				             
+	    });
+	    	   
+	} );
+	</script>
+
+	<script type="text/javascript">
+
+		$(document).ready(function() {
+			var t = $('#tablaCitas2').DataTable(
+
+			{
+				"scrollX": true,
+				"language" : {
+					"lengthMenu" : "Desplegar _MENU_ filas por pagina",
+					"zeroRecords" : "No hay resultados",
+					"info" : "Mostrando pagina _PAGE_ de _PAGES_",
+					"infoEmpty" : "No hay filas disponibles",
+					"infoFiltered" : "(Filtrado de _MAX_ total registros)",
+					"search" : "Buscar:",
+					"previous" : "Anterior",
+					"next" : "Siguiente"
+					},
+
+				"aoColumns" : [ {
+					"sWidth" : "6%"
+				}, // 1st column width N° HC
+				{
+					"sWidth" : "10%"
+				}, // 1st column width N° HC
+				{
+					"sWidth" : "10%"
+				}, // 2nd column width Contrato
+				{
+					"sWidth" : "25%"
+				}, // 3rd column width Operador
+				{
+					"sWidth" : "25%"
+				}, // 4th column width Paciente
+				{
+					"sWidth" : "20%"
+				}, // 5th column width Curso
+				{
+					"sWidth" : "4%"
+				}, // 6th column width Año
+				]
+
+		});
+
+
+// 				"columnDefs" : [ {
+// 					"searchable" : false,
+// 					"orderable" : false,
+// 					"targets" : 0
+// 				} ],
+// 				"order" : [ [ 1, 'asc' ] ]
+// 			});
+
+
+			t.on('order.dt search.dt', function() {
+				t.column(0, {
+					search : 'applied',
+					order : 'applied'
+				}).nodes().each(function(cell, i) {
+					cell.innerHTML = i + 1;
+				});
+			}).draw();
+			
+			t.columns.adjust().draw();
+		});
+	</script>
+
+	<script type="text/javascript">
+		$('#sandbox input').datepicker({
+			orientation : "bottom left",
+				format : 'dd-mm-yyyy'
+		});
+
+
+	</script>
+
+	<script type="text/javascript">
+		$('#datepicker1').datepicker({
+			orientation : "bottom left",
+				format : 'yyyy-mm-dd',
+				language : "es",
+				autoclose : true
+		});
+
+
+	</script>
+
+	<script type="text/javascript">
+		$('#datepicker2').datepicker({
+			orientation : "bottom left",
+				format : 'dd-mm-yyyy',
+				language : "es",
+				autoclose : true
+		});
+
+
+	</script>
+	<script type="text/javascript">
+		$('#datepicker3').datepicker({
+			orientation : "bottom left",
+				format : 'dd-mm-yyyy',
+				language : "es",
+				autoclose : true
+		});
+
+
+	</script>
+	<script type="text/javascript">
+		$('#datepicker4').datepicker({
+			orientation : "bottom left",
+				format : 'dd-mm-yyyy',
+				language : "es",
+				autoclose : true
+		});
+
+
+	</script>
+
+	<script type="text/javascript">
+		$("#cargarArchivo").fileinput({
+			showCaption : true,
+			showUpload : false,
+			showRemove : false,
+			showPreview : false,
+			fileType : 'any'
+		});
+	</script>
+
+
+	<script type="text/javascript">
+		$(function() {
+			$("ul.dropdown-menu").on("click", "[data-stopPropagation]",
+					function(e) {
+						e.stopPropagation();
+					});
+		});
+	</script>
+
+
+	<script type="text/javascript">
+		$(function() {
+			$("ul.dropdown-menu").on("click", "[data-stopPropagation]",
+					function(e) {
+						e.stopPropagation();
+					});
+		});
+	</script>
+	
+	<script type="text/javascript">
+	function soloNumeros(e){		
+		//<![CDATA[			
+			var key = window.Event ? e.which : e.keyCode;
+			if (key==8 || key==0) return true;
+			patron =/\d/;
+		    tecla_final = String.fromCharCode(key);
+		    return patron.test(tecla_final);
+					
+			
+	    //]]>				
+	}
+	</script>
+
+	<script type="text/javascript">
+	function soloNumerosGuion(e){		
+		//<![CDATA[			
+			var key = window.Event ? e.which : e.keyCode;
+			if (key==8 || key==0) return true;
+			patron =/^([0-9\-])$/;			
+		    tecla_final = String.fromCharCode(key);
+		    return patron.test(tecla_final);
+	    //]]>				
+	}
+	</script>
+	
+	<script type="text/javascript">
+		$("#txtNomPac, #txtApatPac, #txtAmatPac, #txtDomPac, #txtOcupPac, #selectorNomPac, #selectorApatPac, #selectorAmatPac, " 
+				+ "#selectorDomPac, #direccion, #selectorOcupPac").bind("input",function(){
+        	this.value= this.value.toUpperCase();
+		});
+	</script>
+	
+	<script type="text/javascript">
+	function soloNombres(e){		
+		//<![CDATA[			
+			var key = (window.Event ? e.which : e.keyCode);
+			if (key==8 || key==0) return true; // 3
+			patron =/([a-z\A-Z\s\\''\ñáéíóú\ÑÁÉÍÓÚ])/;			
+		    tecla = String.fromCharCode(key).toUpperCase();
+		    return patron.test(tecla);
+	    //]]>				
+	}	
+	</script>
+	
+	<script type="text/javascript">
+		function hab_deshab_boton(valor, opt, idBoton){
+			if(opt != valor){
+				document.getElementById(idBoton).disabled=false;
+			} else {
+				document.getElementById(idBoton).disabled=true;
+			}									
+		}
+		
+	</script>
+	
+	<!-- Flot Charts JavaScript -->
+	<script th:src="@{/resources/js/plugins/flot/jquery.flot.js}"></script>
+	<script th:src="@{/resources/js/plugins/flot/jquery.flot.tooltip.min.js}"></script>
+	<script th:src="@{/resources/js/plugins/flot/jquery.flot.resize.js}"></script>
+	<script th:src="@{/resources/js/plugins/flot/jquery.flot.pie.js}"></script>
+	
+	<!-- Morris Charts JavaScript -->
+	<script th:src="@{/resources/js/plugins/morris/raphael.min.js}"></script>
+	<script th:src="@{/resources/js/plugins/morris/morris.min.js}"></script>
+	<script th:src="@{/resources/js/plugins/morris/morris-data.js}"></script>
+	<script th:src="@{/resources/js/atmosphere.js}"></script>
+	
+	<div sec:authorize="hasRole('ADMIN_OA')">
+		<script  th:src="@{/resources/js/notificacionRecita.js}"></script>
+	</div>	
+	
+</body>
+</html>

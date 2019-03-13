@@ -1,0 +1,315 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="layout">
+
+<head>
+<title>Asignaciones</title>
+</head>
+
+<body>
+	<div layout:fragment="content">
+
+		<!-- Cabecera -->
+		<div class="row">
+			<div class="col-lg-12">
+				<h1 class="page-header text-center">MIS AUTORIZACIONES</h1>
+				
+
+			</div>
+
+			<div class="row">
+				<div class="col-lg-12 text-center">
+
+					<div class="col-lg-6">
+						<div th:if="${agregadoA}" class="alert alert-success fade in">
+							<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+							<strong>Cita Registrada con exito!</strong>
+						</div>
+
+						<div class="panel panel-info">
+							<div class="panel-heading">
+								<h3 class="panel-title">Contratos realizados</h3>
+							</div>
+							<div class="panel-body">
+
+								<div class="table-responsive">
+									<table class="table table-bordered table-hover">
+										<thead>
+											<tr>
+												<th>Nro. HC</th>
+												<th>Paciente</th>
+												<th>Apellido Paterno</th>
+												<th>Apellido Materno</th>
+												<th></th>
+											</tr>
+
+										</thead>
+										<tbody>
+											<tr th:each="historia : ${ListaHistorias}">
+												<td th:text="${historia[1]}"></td>
+												<td th:text="${historia[2]}"></td>
+												<td th:text="${historia[3]}"></td>
+												<td th:text="${historia[4]}"></td>
+
+												<td align="center">
+
+													<button onclick="enviarAsignacion(this)"
+														class="btn btn-primary" th:value="${historia[0]}">
+														Realizar Cita</button>
+												</td>
+
+												<td align="center">
+													<button onclick="enviarAsignacion2(this)"
+														class="btn btn-primary" th:value="${historia[0]}">
+														Historial de Citas</button>
+												</td>
+
+											</tr>
+										</tbody>
+									</table>
+
+								</div>
+
+
+								<!-- Registro de Citas 
+								<div id="myModal" class="modal fade" role="dialog">
+									<div class="modal-dialog">
+
+										<div class="modal-content">
+											<div class="modal-header">
+												<button type="button" class="close" data-dismiss="modal">&times;</button>
+												<h4 class="modal-title">
+													<b>REGISTRO DE NUEVA CITA</b>
+												</h4>
+											</div>
+
+											<div class="modal-body">
+
+												<form id="myForm" th:action="@{/registrarCita}"
+													method="post" class="form-horizontal" role="form">
+
+													<div class="form-group">
+														<label for="selectorClinica"
+															class="col-lg-2 control-label">ClÃ­nica</label>
+														<div class="col-lg-10">
+															<select th:remove="all-but-first" class="form-control"
+																name="selectorClinica" th:field="${nuevaCita.clinica}">
+																<option th:each="clinica : ${clinicas}"
+																	th:value="${clinica.idClinica}"
+																	th:text="${clinica.nombre}"></option>
+															</select>
+														</div>
+													</div>
+
+													<div class="form-group">
+														<label for="selectorCurso" class="col-lg-2 control-label">Curso</label>
+														<div class="col-lg-10">
+															<select th:remove="all-but-first" class="form-control"
+																name="selectorCurso">
+																<option th:each="curso : ${cursos}"
+																	th:value="${curso.idCurso}" th:text="${curso.nombre}">Periodoncia</option>
+															</select>
+														</div>
+													</div>
+
+
+													<div class="form-group">
+														<label for="dia" class="col-lg-2 control-label">Dia</label>
+														<div class="col-lg-5">
+															<input type="date" class="form-control" id="fecha"
+																name="fechaEjecucion"></input>
+														</div>
+													</div>
+
+													<div class="form-group">
+														<label for="turno" class="col-lg-2 control-label">Turno</label>
+														<div class="col-lg-5">
+															<select class="form-control" name="turno">
+																<option>MAÃ‘ANA</option>
+																<option>TARDE</option>
+															</select>
+														</div>
+													</div>
+
+													<div class="modal-footer">
+														<div class="form-group">
+															<div class="col-lg-offset-1 col-lg-10">
+																<button type="submit" form="myForm"
+																	name="campo_asignacion" id="campo_asignacion"
+																	class="btn btn-lg btn-primary">REGISTRAR</button>
+															</div>
+														</div>
+													</div>
+
+												</form>
+												
+											</div>
+										</div>
+									</div>
+								</div>
+Registro de Citas -->
+								<!-- Historial de Citas -->
+								<div id="modalListTable" class="modal fade" role="dialog">
+									<div id="mdialTamanio" class="modal-dialog">
+										<!-- Modal content-->
+										<div class="modal-content">
+											<div class="modal-header">
+												<button type="button" class="close" data-dismiss="modal">&times;</button>
+												<h4 class="modal-title">Historial de Citas</h4>
+											</div>
+											<div class="modal-body">
+												<div id="resultsBlock"></div>
+											</div>
+											<div class="modal-footer">
+												<button type="button" class="btn btn-default"
+													data-dismiss="modal">Cerrar</button>
+											</div>
+										</div>
+
+									</div>
+								</div>
+
+							</div>
+
+						</div>
+
+
+					</div>
+
+					<div class="col-lg-6">
+						<div th:if="${agregadoH}" class="alert alert-success fade in">
+							<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+							<strong>Cita Registrada con exito!</strong>
+						</div>
+						<div class="panel panel-info">
+							<div class="panel-heading">
+								<h3 class="panel-title">BÃºsqueda de Historias</h3>
+							</div>
+							<div class="panel-body">
+
+								<div class="row">
+
+									<div class="col-lg-2"></div>
+									<div class="col-lg-8">
+
+										<div class="row">
+											<label class="col-lg-2 control-label" for="txtDNI">DNI</label>
+											<div class="col-lg-5">
+												<input type="text" class="form-control" name="txtDNI"
+													placeholder="12345678"></input>
+											</div>
+										</div>
+										<br></br>
+										<div class="row">
+											<label class="col-lg-2 control-label" for="txtHC">NÂ°
+												HC </label>
+											<div class="col-lg-5">
+												<div class="input-group">
+													<input type="text" class="form-control" id="txtHC"
+														name="txtHC" placeholder="HC001"></input>
+													<div class="input-group-btn">
+														<button class="btn btn-default">
+															<i class="glyphicon glyphicon-search"></i>
+														</button>
+													</div>
+												</div>
+											</div>
+										</div>
+										<br></br>
+										<button onclick="enviarNumHc(txtHC)" class="btn btn-primary">Realizar Cita</button>
+
+									</div>
+								</div>
+								<div class="col-lg-2"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<!-- /.row -->
+	<th:block layout:fragment="script">
+		<script th:inline="javascript">
+			function enviarAsignacion(elemt) {
+				document.getElementById("campo_asignacion").value = elemt.value;
+				// As pointed out in comments, 
+				// it is superfluous to have to manually call the modal.
+				$("#myModal").modal({
+					backdrop : "static"
+				});
+			}
+		</script>
+
+		<script th:inline="javascript">
+			function enviarNumHc(elemt) {
+				document.getElementById("num_hc").value = elemt.value;
+				// As pointed out in comments, 
+				// it is superfluous to have to manually call the modal.
+				$("#myModal2").modal({
+					backdrop : "static"
+				});
+			}
+		</script>
+
+		<script th:inline="javascript">
+			function enviarAsignacion2(elemt) {
+				$('#resultsBlock').load('listarCitasByHC',
+						"idAsig=" + elemt.value);
+				$("#modalListTable").modal({
+					backdrop : "static"
+				});
+			}
+		</script>
+
+		<script>
+			$(document).ready(function() {
+				$('#addTratamiento').click(function() {
+					var tagFieldClone = $('.tags:first').clone();
+					$(tagFieldClone).val('');
+					addAutoComplete(tagFieldClone);
+					$('#tagFieldContainer').append(tagFieldClone);
+					return false;
+				});
+				addAutoComplete('.tags');
+			});
+
+			var availableTags = [ "ActionScript", "AppleScript", "Asp",
+					"BASIC", "C", "C++", "Clojure", "COBOL", "ColdFusion",
+					"Erlang", "Fortran", "Groovy", "Haskell", "Java",
+					"JavaScript", "Lisp", "Perl", "PHP", "Python", "Ruby",
+					"Scala", "Scheme" ];
+			function addAutoComplete(query) {
+				$(query).autocomplete({
+					source : availableTags
+				});
+			}
+		</script>
+		<script th:inline="javascript">
+			/*<![CDATA[*/
+			function agregarTratamiento(elemt) {
+
+				document.getElementById("campo_asignacion").value = elemt.value;
+				$('#myTable tr:last').after('<tr></tr><tr>...</tr>');
+				$("#myModal").modal({
+					backdrop : "static"
+				});
+			}
+			/*]]>*/
+		</script>
+
+
+
+	</th:block>
+
+</body>
+
+<!--ideal seria que aqui hubiera una solo metodo y jugando con los variables, activar uno u otro...-->
+  <script type="text/javascript" src="http://cdn.jsdelivr.net/thymol/latest/thymol.min.js"></script>
+  
+</html>

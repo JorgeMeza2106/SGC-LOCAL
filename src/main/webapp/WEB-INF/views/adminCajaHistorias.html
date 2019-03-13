@@ -1,0 +1,182 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="layout">
+
+<head>
+<title>Historias Clínicas</title>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div id="contratoGenerado" class='notifications top-right'></div>
+		<!-- Cabecera -->
+		<div class="row">
+			<div class="col-lg-12">
+				<h2 class="page-header text-center">HISTORIAS CLÍNICAS - Caja</h2>
+			</div>
+
+			<div class="row">
+				<div class="col-lg-12 text-center">
+
+					<div class="col-md-10 col-md-offset-1">
+						<div class="panel panel-info">
+							<div class="panel-heading text-right">
+								<h3 class="panel-title"></h3>
+							</div>
+							<div class="panel-body">
+
+								<div class="table-responsive">
+									<table class="table table-striped table-bordered table-hover"
+										id="tablaCajaHC">
+										<thead>
+											<tr>
+												<th>HC</th>
+												<th>Contrato</th>
+												<th>DNI</th>
+												<th>Apellido Paterno</th>
+												<th>Apellido Materno</th>
+												<th>Nombre</th>
+												<th>Opción</th>
+											</tr>
+
+										</thead>
+										<tbody>
+											<tr th:each="historia : ${listaHistorias}">
+												<td th:id="${historia.nroHC}" th:text="${historia.nroHC}"></td>
+												<td th:id="${historia.nroContrato}"
+													th:text="${historia.nroContrato}"></td>
+												<td th:text="${historia.dniPaciente}"></td>
+												<td align="left" th:text="${historia.apellidoPatPaciente}"></td>
+												<td align="left" th:text="${historia.apellidoMatPaciente}"></td>
+												<td align="left" th:text="${historia.nombrePaciente}"></td>
+
+												<td align="center"><a
+													th:if="${historia.nroContrato != null}"
+													class="btn-link btn-lg" data-toggle="modal"
+													th:onclick="${ultimoC == historia.nroContrato} ?
+																			'enviarDatos(\'' + ${historia.nroHC} +'\',\''+ ${historia.nombrePaciente} + '\', \''+ 'eliminar' +'\');' 
+																			:'enviarDatos(\'' + ${historia.nroHC} +'\',\''+ ${historia.nombrePaciente} + '\',\''+ 'deshabilitar' +'\');' "
+													th:href="${ultimoC == historia.nroContrato} ? '#modalEliminar' : '#modalDeshabilitar'">
+														<span data-toggle="tooltip" data-placement="bottom"
+														th:title="${ultimoC == historia.nroContrato} ? 'Eliminar' : 'Deshabilitar'"
+														th:class="${ultimoC == historia.nroContrato} ? 'glyphicon glyphicon-remove text-danger'
+																: 'glyphicon glyphicon-off text-warning'"></span>
+												</a> <a th:unless="${historia.nroContrato != null}" href=""
+													data-toggle="modal" data-target="#modalGenerar"
+													th:onclick="'enviarDatos(\'' + ${historia.nroHC} +'\',\''+ ${historia.nombrePaciente} + '\', \''+ 'generar' +'\');'">
+														<img data-toggle="tooltip" data-placement="bottom"
+														title="Generar Contrato"
+														th:src="@{/resources/icons/contrato.png}" height="25"
+														width="25"></img>
+												</a> <span
+													th:class="${historia.nroContrato != null} ? 'glyphicon glyphicon-ok text-success pull-right': '' "></span>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+
+								<div id="modalGenerar" class="modal fade" role="dialog">
+									<div id="mGenerar"
+										class="modal-dialog modal-sm modal-vertical-centered">
+										<!-- Modal content-->
+										<div class="modal-content">
+											<div class="modal-header-primary">
+												<button type="button" class="close" data-dismiss="modal">&times;</button>
+												<h4 class="modal-title text-center">Generar</h4>
+											</div>
+											<div class="modal-body">
+												<div id="generar"></div>
+											</div>
+											<div class="modal-footer">
+												<button th:id="btnGuardar" type="button"
+													class="btn btn-primary" th:onclick="'registrarContrato();'">Si</button>
+												<button type="button" class="btn btn-default"
+													data-dismiss="modal">No</button>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div id="modalEliminar" class="modal fade" role="dialog">
+									<div id="mEliminar"
+										class="modal-dialog modal-sm modal-vertical-centered">
+										<!-- Modal content-->
+										<div class="modal-content">
+											<div class="modal-header-danger">
+												<button type="button" class="close" data-dismiss="modal">&times;</button>
+												<h4 class="modal-title text-center">Eliminar</h4>
+											</div>
+											<div class="modal-body">
+												<div id="eliminar"></div>
+											</div>
+											<div class="modal-footer">
+												<button th:id="btnGuardar" type="button"
+													class="btn btn-danger" th:onclick="'eliminarContrato();'">Si</button>
+												<button type="button" class="btn btn-default"
+													data-dismiss="modal">No</button>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div id="modalDeshabilitar" class="modal fade" role="dialog">
+									<div id="mDeshabilitar"
+										class="modal-dialog modal-sm modal-vertical-centered">
+										<!-- Modal content-->
+										<div class="modal-content">
+											<div class="modal-header-warning">
+												<button type="button" class="close" data-dismiss="modal">&times;</button>
+												<h4 class="modal-title text-center">Deshabilitar</h4>
+											</div>
+											<div class="modal-body">
+												<div id="deshabilitar"></div>
+											</div>
+											<div class="modal-footer">
+												<button th:id="btnGuardar" type="button"
+													class="btn btn-warning"
+													th:onclick="'deshabilitarContrato();'">Si</button>
+												<button type="button" class="btn btn-default"
+													data-dismiss="modal">No</button>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+
+	<!-- /.row -->
+	<th:block layout:fragment="script">
+		<script th:inline="javascript">
+		/*<![CDATA[*/		         		  
+			var nroHC;
+			var ultimoC = /*[[${ultimoC}]]*/;
+		    function enviarDatos(numHC, paciente, accion) {
+		    	switch(accion){
+		    	case "generar":
+		    		$('#'+accion).html('¿Está seguro que desea generar contrato para la HC Nº ' + numHC.bold()+ '?');break;
+		    	case "eliminar":
+		    		$('#'+accion).html('¿Está seguro que desea eliminar el contrato para la HC Nº ' + numHC.bold()+ '?');break;
+		    	case "deshabilitar":
+		    		$('#'+accion).html('¿Está seguro que desea deshabilitar el contrato para la HC Nº ' + numHC.bold()+ '?');break;
+		    	}
+		    	nroHC = numHC;		    	
+			}     		           											
+			/*]]>*/
+
+		</script>
+		<script th:src="@{/resources/js/caja/contrato-caja.js}"></script>
+	</th:block>
+
+</body>
+
+</html>

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="layout">
+<head>
+<title>Citas</title>
+</head>
+
+<body>
+	<div layout:fragment="content">
+
+		<!-- Page Heading -->
+		<div class="row">
+			<div class="col-lg-12">
+				<h1 class="page-header text-center">CITAS DEL DÍA</h1>
+			</div>
+		</div>
+
+		<!-- /.row -->
+		<div class="row">
+
+			<div class="col-lg-12">
+
+				<div class="panel panel-primary">
+					<div class="panel-heading">
+						<h3 class="panel-title">
+							<a data-toggle="collapse" data-parent="#accordion"
+								href="#collapseOne">BÚSQUEDA</a>
+						</h3>
+
+					</div>
+					<div id="collapseOne" class="panel-body collapse ">
+
+						<!--
+							<div class="row">
+								<div class="col-lg-6">
+									<h4>
+										CLINICA: <font color="red"> <span th:text="${clini}"></span>
+										</font>
+									</h4>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-lg-6">
+									<h4>
+										DIA: <font color="red"><span th:text="${date}"></span></font>
+									</h4>
+								</div>
+								<div class="col-lg-6">
+									<h4>
+										TURNO: <font color="red"><span th:text="${turno}"></span></font>
+									</h4>
+								</div>
+							</div>
+							-->
+
+
+						<div class="row">
+							<form id="consultaCitas" method="GET">
+								<div class='col-md-2'>
+									<div class="form-group">
+										<div class="input-group date" id='datepicker1'>
+											<input type='text' class="form-control" th:id="fechaAtencion"
+												th:name="fechaAtencion" placeholder="Fecha" /> <span
+												class="input-group-addon"> <span
+												class="glyphicon glyphicon-calendar"></span>
+											</span>
+										</div>
+									</div>
+									<div class="form-group">
+										<input class="form-control" type="text" th:name="numeroHC"
+											th:id="numeroHC" placeholder="N° HC..."></input>
+									</div>
+
+								</div>
+
+								<div class="col-md-2">
+									<div class="form-group">
+										<select class="form-control" th:name="turno" th:id="turno">
+											<option th:value="X">TODOS</option>
+											<option th:value="M">MAÑANA</option>
+											<option th:value="T">TARDE</option>
+										</select>
+									</div>
+									<div class="form-group">
+										<input class="form-control" type="text"
+											th:name="numeroContrato" th:id="numeroContrato"
+											placeholder="N° contrato..."></input>
+									</div>
+								</div>
+
+								<div class="col-md-2">
+									<div class="form-group">
+										<select class="form-control" th:name="idClinica"
+											th:id="idClinica">
+											<option th:value="${-1}">Seleccione clinica</option>
+											<option th:each="clinica : ${clinicas}"
+												th:value="${clinica.idClinica}" th:text="${clinica.nombre}"></option>
+										</select>
+									</div>
+									<div class="form-group">
+										<input class="form-control" type="text" th:name="dniPaciente"
+											th:id="dniPaciente" placeholder="D.N.I paciente...."></input>
+									</div>
+								</div>
+
+								<div class="col-md-2">
+									<div class="form-group">
+										<select class="form-control" th:id="idCurso" th:name="idCurso">
+											<option th:value="-1">Seleccione curso</option>
+											<option th:each="curso : ${cursos}"
+												th:value="${curso.idCurso}" th:text="${curso.nombre}"></option>
+										</select>
+									</div>
+									<div class="form-group">
+										<input class="form-control" type="text" th:name="dniOperador"
+											th:id="dniOperador" placeholder="Codigo operador...."></input>
+									</div>
+								</div>
+								<div class="col-md-2">
+									<div class="form-group">
+										<select class="form-control" th:id="anio" th:name="anio">
+											<option th:value="-1">Seleccione año</option>
+											<option th:value="1">1</option>
+											<option th:value="2">2</option>
+											<option th:value="3">3</option>
+											<option th:value="4">4</option>
+											<option th:value="5">5</option>
+										</select>
+									</div>
+									<div class="form-group center-block">
+										<input type="checkbox" th:id="isRecita" th:name="isRecita" />  &nbsp;Recitas &nbsp; &nbsp; 
+										<input type="checkbox" th:id="onlyRecitas" th:name="onlyRecitas" /> Todas
+									</div>
+								</div>
+							</form>
+
+							<div class="col-md-2">
+								
+								<div class="form-group">
+									<form th:action="@{/admin_oa/citas/exportar}" method="post">
+										<input type="hidden" name="fecha_excel" th:value="${date}" />
+										<input type="hidden" name="turno_excel" value="${turno}" /> <input
+											type="hidden" name="clinica_excel" value="${clini}" />
+										<button class="btn btn-sm btn-success"
+											type="submit"><span class="glyphicon glyphicon-floppy-save"></span> &nbsp; Generar Excel</button>
+									</form>
+								</div>
+								
+								<div class="form-group">
+									<input type="hidden" name="recita" value="false" />
+									<button onclick="realizarConsulta()"
+										class="btn btn-sm btn-primary" >
+										<span class="glyphicon glyphicon-search"></span>  &nbsp; Buscar
+									</button>
+								</div>
+							</div>
+							<br />
+						</div>
+					</div>
+				</div>
+				<div id="panelResultadoBusquedaCita">
+					<div
+						th:replace="template/fragments/fragmentosCita :: resultadoBusquedaCitas"></div>
+				</div>
+			</div>
+
+
+			<div align="center"></div>
+
+		</div>
+	</div>
+
+
+
+	<th:block layout:fragment="script">
+		<script type="text/javascript">
+			function realizarConsulta() {
+				$('#panelResultadoBusquedaCita').load('buscar',
+					$("#consultaCitas").serialize());
+					console.log("lego pero no hago ni pancho");
+						
+			}
+		</script>
+	</th:block>
+
+
+</body>
+</html>

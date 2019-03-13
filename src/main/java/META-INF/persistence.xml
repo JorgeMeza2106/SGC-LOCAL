@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+	<persistence-unit name="SGC">
+		<class>pe.com.fisi.cenpro.sigeco.mgc.domain.Administrativo</class>
+		<class>pe.com.fisi.cenpro.sigeco.mgc.domain.Alumno</class>
+		<class>pe.com.fisi.cenpro.sigeco.mgc.domain.Asignacion</class>
+		<class>pe.com.fisi.cenpro.sigeco.mgc.domain.Asistencia</class>
+		<class>pe.com.fisi.cenpro.sigeco.mgc.domain.Cita</class>
+		<class>pe.com.fisi.cenpro.sigeco.mgc.domain.Clinica</class>
+		<class>pe.com.fisi.cenpro.sigeco.mgc.domain.ContratoPre</class>
+		<class>pe.com.fisi.cenpro.sigeco.mgc.domain.Curso</class>
+		<class>pe.com.fisi.cenpro.sigeco.mgc.domain.DatosPersona</class>
+		<class>pe.com.fisi.cenpro.sigeco.mgc.domain.Doctor</class>
+		<class>pe.com.fisi.cenpro.sigeco.mgc.domain.HistoriaClinica</class>
+		<class>pe.com.fisi.cenpro.sigeco.mgc.domain.HorarioClinica</class>
+		<class>pe.com.fisi.cenpro.sigeco.mgc.domain.Paciente</class>
+		<class>pe.com.fisi.cenpro.sigeco.mgc.domain.Persona</class>
+		<class>pe.com.fisi.cenpro.sigeco.mgc.domain.Rol</class>
+		<class>pe.com.fisi.cenpro.sigeco.mgc.domain.Tratamiento</class>
+		<class>pe.com.fisi.cenpro.sigeco.mgc.domain.Turno</class>
+		<class>pe.com.fisi.cenpro.sigeco.mgc.domain.Ubigeo</class>
+		<class>pe.com.fisi.cenpro.sigeco.mgc.domain.Usuario</class>
+	</persistence-unit>
+</persistence>

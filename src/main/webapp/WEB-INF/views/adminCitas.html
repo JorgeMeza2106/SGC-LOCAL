@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+	layout:decorator="layout">
+<head>
+<title>Citas</title>
+</head>
+
+<body>
+	<div layout:fragment="content">
+
+		<!-- Page Heading -->
+		<div class="row">
+			<div class="col-lg-12">
+				<h1 class="page-header text-center"
+					th:text="${#authorization.expression('hasRole(''ADMIN_CC'')')} ? 
+               		'CITAS DEL DÍA - Central de Citas' : 
+              		'CITAS DEL DÍA - Oficina de Archivos'"></h1>
+			</div>
+		</div>
+
+		<!-- /.row -->
+		<div class="row">
+
+			<div class="col-lg-12">
+
+				<div sec:authorize="hasRole('ADMIN_CC')" class="form-group" align="right">
+					<form id="formExcel" th:action="@{/admin_cc/citas/exportar}" 
+							accept-charset="utf-8" method="post">						
+						<button class="btn btn-sm btn-success" type="button"
+							onclick="parametrosExcel()">
+							<span class="glyphicon glyphicon-floppy-save"></span> &nbsp;
+							Generar Excel
+						</button>
+					</form>
+				</div>
+
+				<div class="panel panel-primary">
+					<div class="panel-heading">
+						<h3 class="panel-title">
+							<a data-toggle="collapse" data-parent="#accordion"
+								href="#collapseOne">BÚSQUEDA</a>
+						</h3>
+
+					</div>
+					<div id="collapseOne" class="panel-body collapse ">
+
+				
+						<div class="row">
+							<form id="consultaCitas" method="GET">
+								<div class='col-md-2'>
+									<div class="form-group">
+										<div class="input-group date" id='datepicker1'>
+											<input type='text' class="form-control" th:id="fechaAtencion"
+												th:name="fechaAtencion" placeholder="Fecha" /> <span
+												class="input-group-addon"> <span
+												class="glyphicon glyphicon-calendar"></span>
+											</span>
+										</div>
+									</div>
+									<div class="form-group">
+										<input class="form-control" type="text" th:name="numeroHC"
+											th:id="numeroHC" placeholder="N° HC..." maxlength="5"
+											onkeypress="return soloNumeros(event)"></input>
+									</div>
+
+								</div>
+
+								<div class="col-md-2">
+									<div class="form-group">
+										<select class="form-control" th:name="turno" th:id="turno"
+											onchange="sombreaSelect(this.id)">
+											<option th:value="${-1}">Seleccione turno</option>
+											<option th:value="M">Mañana</option>
+											<option th:value="T">Tarde</option>
+										</select>
+									</div>
+									<div class="form-group">
+										<input class="form-control" type="text"
+											th:name="numeroContrato" th:id="numeroContrato"
+											placeholder="N° contrato..." maxlength="5"
+											onkeypress="return soloNumeros(event)"></input>
+									</div>
+								</div>
+
+								<div class="col-md-2">
+									<div class="form-group">
+										<select class="form-control" th:name="idClinica"
+											th:id="idClinica" onchange="sombreaSelect(this.id)">
+											<option th:value="${-1}">Seleccione clinica</option>
+											<option th:each="clinica : ${clinicas}"
+												th:value="${clinica.idClinica}" th:text="${clinica.nombre}"></option>
+										</select>
+									</div>
+									<div class="form-group">
+										<input class="form-control" type="text" th:name="dniPaciente"
+											th:id="dniPaciente" placeholder="D.N.I paciente...."
+											maxlength="8" onkeypress="return soloNumeros(event)"></input>
+									</div>
+								</div>
+
+								<div class="col-md-2">
+									<div class="form-group">
+										<select class="form-control" th:id="idCurso" th:name="idCurso"
+											onchange="sombreaSelect(this.id)">
+											<option th:value="-1">Seleccione curso</option>
+											<option th:each="curso : ${cursos}"
+												th:value="${curso.idCurso}" th:text="${curso.nombre}"></option>
+										</select>
+									</div>
+									<div class="form-group">
+										<input class="form-control" type="text" th:name="codigoOperador"
+											th:id="codigoOperador" placeholder="Codigo alumno...."
+											maxlength="8" onkeypress="return soloNumeros(event)"></input>
+									</div>
+								</div>
+								<div class="col-md-2">
+									<div class="form-group">
+										<select class="form-control" th:id="anio" th:name="anio"
+											onchange="sombreaSelect(this.id)">
+											<option th:value="-1">Seleccione año</option>
+											<option th:value="1">1</option>
+											<option th:value="2">2</option>
+											<option th:value="3">3</option>
+											<option th:value="4">4</option>
+											<option th:value="5">5</option>
+										</select>
+									</div>
+<!-- 									<div class="form-group center-block"> -->
+<!-- 										<input type="checkbox" th:id="isRecita" th:name="isRecita" /> -->
+<!-- 										&nbsp;Recitas &nbsp; &nbsp; <input type="checkbox" -->
+<!-- 											th:id="onlyRecitas" th:name="onlyRecitas" /> Todas -->
+<!-- 									</div> -->
+								</div>
+							</form>
+
+							<div class="col-md-2">
+
+
+
+								<div class="form-group">
+									<input type="hidden" name="recita" value="false" />
+									<button onclick="realizarConsulta()"
+										class="btn btn-sm btn-primary">
+										<span class="glyphicon glyphicon-search"></span> &nbsp; Buscar
+									</button>
+								</div>
+							</div>
+							<br />
+						</div>
+					</div>
+				</div>
+				<div id="panelResultadoBusquedaCita">
+					<div
+						th:replace="template/fragments/fragmentosCita :: resultadoBusquedaCitas"></div>
+				</div>
+			</div>
+
+
+			<div align="center"></div>
+
+		</div>
+	</div>
+
+
+
+	<th:block layout:fragment="script">
+		<script type="text/javascript">
+		/*<![CDATA[*/
+		var parametros
+			function realizarConsulta() {
+				$('#panelResultadoBusquedaCita').load('buscar',
+						$("#consultaCitas").serialize(), function(data){
+					$('#tabla').DataTable({
+				    	"scrollY":     "350px",
+				    	"language" : {
+				    		"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"				
+						}
+				    
+				    });
+					console.log("lego pero no hago ni pancho");
+					parametros = {
+							"pFechaAtencion": $("#fechaAtencion").val(),
+							"pTurno": $("#turno").find(":selected").text(),
+							"pClinica": $("#idClinica").find(":selected").text()
+					}	
+				});				
+			}
+			
+			function parametrosExcel(){
+						
+				var csrf = $('meta[name=_csrf]').attr("content");
+				var form = $("#formExcel");			    
+				console.log("nombre cli: "+$("#idClinica").find(":selected").text());
+				url = "/SGC/admin_cc/citas/exportar?"+ $.param(parametros || '' );
+				console.log("URL: "+url);
+				form.attr('action', url);
+				form.submit();
+			}					
+			/*]]>*/  
+		</script>
+		<script type="text/javascript">
+		/*<![CDATA[*/	
+			function sombreaSelect(id) {
+				var option = document.getElementById(id).value;
+								
+				var sel = document.getElementById(id);
+				sel
+						.addEventListener(
+								'click',
+								function(el) {
+									if (option != -1) {
+										document.getElementById(id).style.backgroundColor = '#CEE3F6';
+										var options = this.children;
+										for (var i = 0; i < this.childElementCount; i++) {
+											options[i].style.backgroundColor = 'white';
+										}
+										var selected = this.children[this.selectedIndex];
+										selected.style.backgroundColor = '#CEE3F6';
+									} else {
+										document.getElementById(id).style.backgroundColor = 'white';
+									}
+
+								}, false);
+				realizarConsulta();				
+
+			}			
+			/*]]>*/
+		</script>		
+	</th:block>
+
+
+</body>
+</html>

@@ -1,0 +1,101 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="layout">
+
+<head>
+<title>Asistencia</title>
+<meta charset="utf-8"></meta>
+</head>
+<body>
+	<th:block layout:fragment="style">
+		<link
+			th:href="@{/resources/js/plugins/notifications/sweetalert2.min.css}" rel="stylesheet" type="text/css" />
+	</th:block>
+
+	<div layout:fragment="content">
+
+		<!-- Cabecera -->
+		<div class="row">
+			<div class="col-lg-12">
+				<h1 class="page-header text-center">ASISTENCIA DE OPERADORES</h1>
+				<div id="clock" class="light">
+					<div class="display">
+						<div class="weekdays"></div>
+						<div class="ampm"></div>
+						<div class="alarm"></div>
+						<div class="digits"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="row ">
+			<div class="col-lg-7 col-lg-offset-4 col-sm-5 col-sm-offset-2 ">
+				<form id="frmIngresoDni" class="form-inline center-block">
+					<div class="form-group">
+						<label class="control-label" for="txtDniPersonal"> Ingrese su DNI: &nbsp; </label>
+						<div class="input-group">
+							<input autocomplete="off"
+								class="form-control input-lg only-numbers-dni" name="dniPersona"
+								id="txtDniPersona" placeholder="p.e. (48954631)" type="text"></input>
+							<div class="input-group-btn">
+								<button type="button" id="btnBuscarPersonal" class="btn btn-lg btn-default">
+									<i class="fa fa-search"></i>
+								</button>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+
+		<div id="divResultado" class="row hidden">
+			<div class="col-lg-12 text-center">
+				<h2>
+					<span id="nombreCompletoPersonal" class=" label label-primary"></span>
+				</h2>
+			</div>
+		</div>
+
+		<br></br> <br></br>
+
+		<div class="row">
+			<div class="col-lg-2 col-lg-offset-3 text-center">
+				<button class="btn btn3d btn-lg btn-primary btn-block" type="button"
+					id="btnRegistrarEntrada" th:name="entrada">
+					<h2>ENTRADA</h2>
+				</button>
+
+			</div>
+			<div class="col-lg-2 col-lg-offset-2 text-center">
+				<button class="btn btn3d btn-lg btn-danger  btn-block" type="button"
+					id="btnRegistrarSalida" th:name="salida">
+					<h2>SALIDA</h2>
+				</button>
+			</div>
+
+		</div>
+
+
+		<div id="resultadoValidacion" class='notifications top-right'></div>
+
+	</div>
+
+	<div th:if="${isRegistrado} != null AND ${isRegistrado}">
+		<div class='notifications top-right' id='ntfRegistroAsistencia'></div>
+	</div>
+
+	<th:block layout:fragment="script">
+		<script type="text/javascript" charset="UTF-8"
+			th:src="@{/resources/js/clinica/asistencia-clinica.js}"></script>
+		<script type="text/javascript" charset="UTF-8"
+			th:src="@{/resources/js/validation/validator-util.js}"></script>
+		<script type="text/javascript"
+			th:src="@{/resources/js/plugins/notifications/sweetalert2.min.js}">
+		</script>
+	</th:block>
+</body>
+</html>

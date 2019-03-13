@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<body>
+
+	<div th:fragment="panelAsignaciones">
+		<div class="panel"
+			th:classappend="${estadoAsignacion == 'ASIGNADA'} ? panel-warning : panel-info">
+			<div class="panel-heading">
+				<h3
+					th:text="${estadoAsignacion == 'ASIGNADA'} ? 'ASIGNACIONES' : 'AUTORIZACIONES'"
+					class="panel-title"></h3>
+			</div>
+			<div class="panel-body">
+				<div class="table-responsive">
+					<table class="table table-bordered table-hover">
+						<thead>
+							<tr>
+								<th>Nro. HC</th>
+								<th>Nro. Contrato</th>
+								<th>Pacientes</th>															
+	 							<th th:if="${tipoUsuario != 'admin'}"></th>
+	 							<th th:if="${tipoUsuario == 'admin'}"></th>	 							
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:if="${asignacion.estado == estadoAsignacion}"
+								th:each="asignacion : ${listaAsignaciones}">
+								<td th:text="${asignacion.datosHistoria.nroHC}"></td>
+								<td th:text="${asignacion.datosHistoria.nroContrato}"></td>
+								<td align="left"
+									th:text="${asignacion.datosHistoria.apellidoPatPaciente + ' ' +
+															   asignacion.datosHistoria.apellidoMatPaciente + ', ' +
+															   asignacion.datosHistoria.nombrePaciente }"></td>
+								<td align="center">
+									<button onclick="enviarIDAsignacion(this)" data-toggle="modal"
+										data-target="#modalCita" class="btn btn-primary"
+										th:value="${asignacion.idAsignacion}">Reservar Cita</button>
+
+								</td>
+
+								<td th:if="${tipoUsuario != 'admin'}" align="center">
+									<button onclick="cargarHistorialCitas(this)"
+										class="btn btn-primary" th:value="${asignacion.idAsignacion}"
+										data-toggle="modal" data-target="#modalHistorial">
+										Historial</button>
+								</td>
+								
+<!-- 								<td th:if="${tipoUsuario == 'admin'}" align="center"> -->
+<!-- 									<button onclick="cargarHistorialCitasAdicionales(this)" -->
+<!-- 										class="btn btn-primary" th:value="${asignacion.idAsignacion}" -->
+<!-- 										data-toggle="modal" data-target="#modalHistorial"> -->
+<!-- 										Historial</button> -->
+<!-- 								</td> -->
+								
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div th:fragment="resultadoBusquedaCitas">
+		<div class="panel panel-primary" >
+			<div class="panel-heading">
+				<h3 class="panel-title">CITAS</h3>
+			</div>
+			<div class="panel-body">
+				<div class="table-responsive">
+					<table  class="table table-bordered table-hover " id="tabla"
+						data-sort-name="name">
+						<thead>
+							<tr class="info">
+								<th data-field="name" data-sortable="true"></th>
+								<th>N° de HC</th>
+
+								<th>Contrato</th>
+								<th>Paciente</th>
+								<th>Fecha</th>
+								<th th:if="${tipoUsuario != 'alumno'}">Operador</th>
+								<th>Curso</th>
+								<th>Año</th>
+								<th>Estado</th>
+								<th th:if="${tipoAdmin == 'diagnostico'}"></th>
+							</tr>
+						</thead>
+
+						<tbody id="resultadoBusqueda">
+							<tr th:each="cita, stat : ${citas}">
+								<td th:text="${stat.index + 1}"></td>
+								<td th:text="${cita.numeroHC}"></td>
+								<td th:text="${cita.numeroContrato}"></td>
+								<td th:text="${cita.paciente}"></td>
+								<td th:text="${cita.fechaAtencion}"></td>
+								<td th:if="${tipoUsuario != 'alumno'}" th:text="${cita.operador}"></td>
+								<td th:text="${cita.curso}"></td>
+								<td th:text="${cita.anio}"></td>
+								<td th:text="${cita.estado}"></td>
+
+								<td th:if="${tipoAdmin == 'diagnostico'}" align="center">
+									<button class="btn btn-sm btn-success" onclick="cargarPapeleta(this)" data-toggle="modal"
+										data-target="#modalPapeleta" 
+										th:value="${cita.idCita}"><span class="glyphicon glyphicon-floppy-save"></span> &nbsp;
+										Generar Papeleta</button>
+								</td>
+							</tr>
+						</tbody>
+
+					</table>
+				</div>
+			</div>
+
+		</div>
+
+	</div>
+
+	<div th:onload="'gg()'" th:fragment="resultadosBusquedaDoctor">
+
+		<table class="table table-hover">
+			<thead>
+				<tr>
+					<th>DNI</th>
+					<th>Nombre Completo</th>
+					<th></th>
+				</tr>
+
+			</thead>
+
+			<tbody>
+				<tr th:each="doctor : ${listaDoctores}">
+					<td th:text="${doctor.codigo}">881002013</td>
+					<td
+						th:text="${doctor.nombre + ' ' + doctor.apellidoPaterno + ' '+ doctor.apellidoMaterno}">Juan
+						Perez</td>
+					<td><button type="button" class="btn btn-info btn-sm"
+							th:onclick="'elegirCodigo(\'' + ${doctor.codigo} + '\')'">
+							<span class="glyphicon glyphicon-ok"></span>
+						</button></td>
+				</tr>
+			</tbody>
+		</table>
+
+	
+	</div>
+
+</body>
+
+
+<script>
+function gg(){
+	var table = $('#tabla').DataTable({
+	
+					//"scrollX": true,
+			    	"scrollY":     "400px",
+			    	"language" : {
+						"lengthMenu" : "Desplegar _MENU_ filas por pagina",
+						"zeroRecords" : "No hay resultados",
+						"info" : "Mostrando pagina _PAGE_ de _PAGES_",
+						"infoEmpty" : "No hay filas disponibles",
+						"infoFiltered" : "(Filtrado de _MAX_ total registros)",
+						"search" : "Buscar:",
+						"previous" : "Anterior",
+						"next" : "Siguiente"
+					}
+			    
+			    });
+}</script>
+
+
+</html>

@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="layout">
+<head>
+<title>Importación de HC</title>
+<link th:href="@{/resources/css/pnotify.custom.min.css}"
+	rel="stylesheet"></link>
+
+</head>
+
+
+<body>
+	<div layout:fragment="content">
+
+		<!-- Page Heading -->
+		<div class="row">
+			<div class="col-lg-12">
+				<h2 class="page-header text-center">IMPORTACIÓN DE HISTORIAS CLÍNICAS - Central de Citas</h2>
+
+			</div>
+		</div>
+		<!-- /.row -->
+
+		<div class="row">
+
+			<div class="row">
+				<div class="col-lg-6">
+					<form
+						th:action="@{/admin_cc/historias/importarExcel} + '?' + ${_csrf.parameterName} + '=' + ${_csrf.token}"
+						method="post" enctype="multipart/form-data">
+
+						<div class="row">
+							<!-- 
+							<div th:if="${errorIE}"
+								class="alert alert-warning alert-dismissable"
+								th:style="'display: '+ ${mostrar}+ ';'">
+								<button type="button" class="close" data-dismiss="alert">&times;</button>
+								<strong>¡Cuidado!</strong>
+								<p th:text="${mensaje}"></p>
+								<strong th:text="${pacienteError}"></strong>
+							</div>							
+							 -->
+							<div th:if="${errorCargar}!=null">
+								<div th:if="${errorCargar}==true">
+									<div class='notifications top-right' id='notiErrorCargar'></div>
+								</div>
+								<div th:if="${errorCargar}==false">
+									<div class='notifications top-right' id='notiCorrecto'></div>
+								</div>
+							</div>
+							<div th:if="${errorCab}==true">
+								<div class='notifications top-right' id='notiErrorCab'></div>
+							</div>
+							<div th:if="${errorIE}==true">
+								<div class='notifications top-right' id='notiError'></div>
+							</div>
+
+						</div>
+						<div class="row">
+							<div th:if="${mensajeIBD}==true">
+								<div class='notifications top-right' id='notiCorrecto'></div>
+							</div>
+						</div>
+						<div class="modal fade" id="myModal" role="dialog">
+							<div class="modal-dialog-primary">
+
+								<!-- Modal content-->
+								<div class="modal-content">
+									<div class="modal-header-primary">
+										<button type="button" class="close" data-dismiss="modal">&times;</button>
+										<h4 class="modal-title">Formato de la cabecera del Excel</h4>
+									</div>
+									
+									<div class="modal-body">
+										<p>Estructura:</p>
+										<div class="table-responsive">
+											<table class="table table-striped table-bordered">
+												<tr class="info">
+													<td><strong>HISTORIAS</strong></td>
+													<td><strong>APPELIDO PATERNO</strong></td>
+													<td><strong>APELLIDO MATERNO</strong></td>
+													<td><strong>NOMBRES</strong></td>
+													<td><strong>EDAD</strong></td>
+													<td><strong>SEXO</strong></td>
+													<td><strong>OCUPACION</strong></td>
+													<td><strong>DOMICILIO</strong></td>
+													<td><strong>DISTRITO</strong></td>
+													<td><strong>TELEFONO</strong></td>
+													<td><strong>DNI</strong></td>
+													<td><strong>ESTADO CIVIL</strong></td>
+													<td><strong>FECHA HISTORIA</strong></td>
+													<td><strong>CONTRATO PRE</strong></td>
+													<td><strong>CONTRATO POST GRADO</strong></td>
+													<td><strong>CONTRATO SAR</strong></td>
+													<td><strong>FECHA CONTRATO</strong></td>
+													<td><strong>OPERADOR</strong></td>
+												</tr>
+											</table>
+										</div>
+
+									</div>
+									<div class="modal-footer">
+										<button type="button" class="btn btn-default"
+											data-dismiss="modal">Cerrar</button>
+											
+									</div>
+								</div>
+
+							</div>
+						</div>
+						<div class="panel panel-primary">
+							<div class="panel-heading">
+								<h3 class="panel-title">Importar</h3>
+							</div>
+							<div class="panel-body">
+
+								<div class="col-sm-8">
+									<div class="form-group">
+										<input type="file" class="file" id="cargarArchivo"
+											name="fichero" accept=".xls" onchange="cargar(this.value);"></input>
+									</div>
+								</div>
+								<div class="col-sm-2 ">
+									<div class="row">
+										<div class="form-group">
+											<button th:disabled="${procesar}" type="submit" class="btn btn-primary" name="action"
+												id="procesar" value="procesar">
+												<span class="glyphicon glyphicon-cog"></span> Procesar
+											</button>
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-2">
+									<div class="row">
+										<button th:disabled="${confirmar}" type="submit" id = "confirmar"
+											class="btn btn-primary" name="action" value="confirmar">
+											<span class="glyphicon glyphicon-upload"></span> Confirmar
+										</button>
+									</div>
+								</div>
+								<br /> <br /> <br />
+
+							</div>
+						</div>
+
+					</form>
+				</div>
+
+				<div class="col-lg-6">
+					<div class="panel panel-warning">
+						<div class="panel-heading">
+
+							<h3 class="panel-title">
+								<img alt="Usuario" th:src="@{/resources/icons/user_warning.png}"
+									width="20" height="20"></img> Importante!
+							</h3>
+						</div>
+						<div class="panel-body">
+							<div class="row">
+								<div class="col-lg-12">
+									Estimado usuario, para importar las Historias Clinicas, debe
+									cargar <span class="label label-primary">Browse</span> un
+									archivo excel con extension ".xls"; en seguida click en <span
+										class="label label-primary">Procesar</span> (para cargar y
+									verificar los datos); y finalmente click en <span
+										class="label label-primary">Confirmar</span> para terminar el
+									registro. En caso de ocurrir un error en procesado, se indicara
+									donde debe corregir.
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="panel panel-primary">
+				<div class="panel-heading">
+					<h3 class="panel-title">Historias</h3>
+				</div>
+				<div class="panel-body">
+					<div class="table-responsive">
+						<table class="table table-striped table-bordered" id="tablaHC">
+							<thead>
+								<tr class="info">
+									<th align="center">N° de HC</th>
+									<th align="center">Nombre del paciente</th>
+									<!--<th align="center">Edad</th> -->
+									<th align="center">Sexo</th>
+									<th align="center">Ocupacion</th>
+									<th align="center">Domicilio</th>
+									<th align="center">Distrito</th>
+									<th align="center">Telefono</th>
+									<th align="center">D.N.I.</th>
+									<th align="center">Estado Civil</th>
+									<th align="center">Fecha Historia</th>
+									<th align="center">Contrato PRE</th>
+									<th align="center">Contrato POST Grado</th>
+									<th align="center">Contrato SAR</th>
+									<th align="center">Fecha Contrato</th>
+									<th align="center">D.N.I Operador</th>
+									<th align="center" th:if="${errorIE}==true" class="danger">Error</th>
+
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="dato,datoStat : ${datos}">
+									<td th:text="${dato.historiaClinicaGeneralBO.nroHC}"></td>
+									<td
+										th:text="${dato.historiaClinicaGeneralBO.apellidoPatPaciente
+										+' '+dato.historiaClinicaGeneralBO.apellidoMatPaciente
+										+' '+dato.historiaClinicaGeneralBO.nombrePaciente}"></td>
+									<td th:text="${dato.datosPersonaBO.sexo}"></td>
+									<td th:text="${dato.datosPersonaBO.ocupacion}"></td>
+									<td th:text="${dato.datosPersonaBO.domicilio}"></td>
+									<td th:text="${dato.datosPersonaBO.distrito}"></td>
+									<td th:text="${dato.datosPersonaBO.telefonoCelular}"></td>
+									<td th:text="${dato.historiaClinicaGeneralBO.dniPaciente}"></td>
+									<td th:text="${dato.datosPersonaBO.estadoCivil}"></td>
+									<td th:text="${dato.historiaClinicaGeneralBO.fechaHC}"></td>
+									<td th:text="${dato.historiaClinicaGeneralBO.nroContrato}"></td>
+									<td></td>
+									<td></td>
+									<td th:text="${dato.historiaClinicaGeneralBO.fechaContrato}"></td>
+									<td th:text="${dato.asignacionForm.codigoAlumno}"></td>
+									<td class="danger" th:if="${errorIE}==true"
+										th:text="*{errores[__${datoStat .index}__]}"></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+
+			</div>
+
+		</div>
+
+
+	</div>
+</body>
+
+<script type="text/javascript"
+	src="http://cdn.jsdelivr.net/thymol/latest/thymol.min.js"></script>
+
+<th:block layout:fragment="script">
+	<script th:inline="javascript">
+		$('#notiError').notify({
+			message : {
+				html : '<strong>¡Cuidado!</strong><p th:text="${mensaje}"></p>'
+			},
+			type : 'danger'
+		}).show();
+	</script>
+
+	<script th:inline="javascript">
+		$('#notiCorrecto')
+				.notify(
+						{
+							message : {
+								html : '<strong>Bien hecho</strong><p th:text="${mensaje}"></p>'
+							},
+							type : 'success'
+						}).show();
+	</script>
+
+
+	<script th:inline="javascript">
+		$('#notiErrorCargar')
+				.notify(
+						{
+							message : {
+								html : '<strong>¡Cuidado!</strong><p th:text="${mensajeCargar}"></p>'
+							},
+							type : 'danger'
+						}).show();
+	</script>
+
+	<script th:inline="javascript">
+		$('#notiErrorCab')
+				.notify(
+						{
+							message : {
+								html : '<strong>¡Cuidado!</strong><p th:text="${mensajeCargar}"></p> <a href="#myModal" class="btn btn-md btn-danger" data-toggle="modal">Ver Formato</a>'
+							},
+							type : 'danger'
+						}).show();
+	</script>
+
+	<script th:inline="javascript">
+		$(document).ready(function() {
+			$("#myBtn").click(function() {
+				$("#myModal").modal();
+			});
+		});
+	</script>
+
+	<script th:inline="javascript">
+		function cargar(valor) {			
+			//(valor.length == 0) ? (document.getElementById("procesar").disabled = true)
+				//	: (document.getElementById("procesar").disabled = false);
+			
+			if(valor.length == 0){
+				document.getElementById("procesar").disabled = true;
+				
+			}else{
+				document.getElementById("procesar").disabled = false
+			}
+			document.getElementById("confirmar").disabled = true
+		}
+	</script>
+</th:block>
+
+</html>
