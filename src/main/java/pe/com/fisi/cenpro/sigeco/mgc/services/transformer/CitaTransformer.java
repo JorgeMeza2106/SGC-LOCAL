@@ -87,6 +87,22 @@ public class CitaTransformer {
 		}
 		return citaBO;
 	}
+	
+	public static CitaEventoBO transformObjectCitaEventoToBo(Object[] objects) {
+		CitaEventoBO citaevento_BO = null;
+		if (objects != null) {
+			citaevento_BO = new CitaEventoBO();
+			
+			citaevento_BO.setId(AppUtil.ObjectToInteger(objects[0]));
+			citaevento_BO.setTitle("Cita con paciente: "+ AppUtil.ObjectToInteger(objects[1]));
+			citaevento_BO.setStart((AppUtil.ObjectToDate(objects[11])));
+			/*
+			citaevento_BO.setEnd(id);
+			*/
+			citaevento_BO.setDescripcion("Pruebita con fe");
+		}
+		return citaevento_BO;
+	}
 
 	public static PapeletaBO transformObjectToPapeletaBo(Object[] o) {
 		PapeletaBO papeletaBo = null;
