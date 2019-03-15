@@ -168,7 +168,7 @@ public class AlumnoController {
 		citaBo.setIsRecita(false);
 		
 		Gson gson = new Gson();
-		return gson.toJson(citaService.listarCitasPorBo(citaBo));
+		return gson.toJson(citaService.listarCitasEventosPorBo(citaBo));
 	}
 	
 	@RequestMapping("/alumno/recitas/listar")

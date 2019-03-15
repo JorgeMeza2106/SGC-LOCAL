@@ -22,6 +22,7 @@ import pe.com.fisi.cenpro.sigeco.mgc.services.CitaService;
 import pe.com.fisi.cenpro.sigeco.mgc.services.ParamConfigService;
 import pe.com.fisi.cenpro.sigeco.mgc.services.bo.CitaAsistenciaBO;
 import pe.com.fisi.cenpro.sigeco.mgc.services.bo.CitaBO;
+import pe.com.fisi.cenpro.sigeco.mgc.services.bo.CitaEventoBO;
 import pe.com.fisi.cenpro.sigeco.mgc.services.bo.PapeletaBO;
 import pe.com.fisi.cenpro.sigeco.mgc.services.transformer.CitaTransformer;
 import pe.com.fisi.cenpro.sigeco.mgc.utils.AppUtil;
@@ -111,6 +112,58 @@ public class CitaServiceImpl implements CitaService {
 	}
 	
 	@Override
+	public List<CitaEventoBO> listarCitasEventosPorBo(CitaBO citaBo) {
+		char turno = 'O';
+		int nroHc = -1;
+		int nroContrato = -1;
+		String codigoAlumno = "X";
+		String dniPaciente = "X";
+		int idCurso = -1;
+		int anioCurso = -1;
+		int idClinica = -1;
+		String fechaAtencion = "X";
+		String esRecita = "N";
+
+		if (!String.valueOf(citaBo.getTurno()).trim().isEmpty()) {
+			turno = citaBo.getTurno();
+		}
+		if (citaBo.getNumeroHC() != null) {
+			nroHc = citaBo.getNumeroHC();
+		}
+		if (citaBo.getNumeroContrato() != null) {
+			nroContrato = citaBo.getNumeroContrato();
+		}
+		if (citaBo.getCodigoOperador() != null && !citaBo.getCodigoOperador().trim().isEmpty()) {
+			codigoAlumno = citaBo.getCodigoOperador();
+		}
+		if (citaBo.getDniPaciente() != null && !citaBo.getDniPaciente().trim().isEmpty()) {
+			dniPaciente = citaBo.getDniPaciente();
+		}
+		if (citaBo.getIdCurso() != null && citaBo.getIdCurso() != -1) {
+			idCurso = citaBo.getIdCurso();
+		}
+		if (citaBo.getAnio() != null && citaBo.getAnio() != -1) {
+			anioCurso = Integer.parseInt(String.valueOf(citaBo.getAnio()));
+		}
+		if (citaBo.getIdClinica() != null && citaBo.getIdClinica() != -1) {
+			idClinica = citaBo.getIdClinica();
+		}
+		if (citaBo.getFechaAtencion() != null) {
+			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+			fechaAtencion = formatter.format(citaBo.getFechaAtencion());
+		}
+		if (citaBo.getIsRecita()) {
+			esRecita = "Y";
+		}
+		return CitaTransformer.transformObjectsToListCitaEventoBo(citaRepository.obtenerCitasPorCampos(String.valueOf(turno),
+				nroHc, nroContrato, codigoAlumno, dniPaciente, idCurso, anioCurso, idClinica, fechaAtencion, esRecita));
+		// citaRepository.obtenerCitasPorCampos(nroHc, nroContrato,
+		// codigoAlumno,
+		// dniPaciente, idCurso, anioCurso, idClinica, fechaAtencion,
+		// esRecita));
+	}
+	
+	@Override
 	public List<CitaAsistenciaBO> listarCitasAsistenciaPorBo(CitaBO citaBo) {
 		char turno = 'O';
 		int nroHc = -1;
@@ -158,7 +211,7 @@ public class CitaServiceImpl implements CitaService {
 	}
 
 	/**
-	 * Método que registra la cita, realiza todas las validaciones necesarias
+	 * Mï¿½todo que registra la cita, realiza todas las validaciones necesarias
 	 * para mantener la integridad de la cita y respetar las reglas de negocio.
 	 * Valida los siguientes reglas:
 	 * <ul type="1">
@@ -192,7 +245,7 @@ public class CitaServiceImpl implements CitaService {
 		}
 
 		if (isValidada) {
-			// Validar la fecha de atención
+			// Validar la fecha de atenciï¿½n
 			int resValidaFecAte = validarFechaAtencion(fechaAtencion);
 			if (resValidaFecAte != ServiceConstants.FECHA_ATENCION_VALIDA) {
 				return Mensajes.evaluarResultado(resValidaFecAte);
@@ -257,7 +310,7 @@ public class CitaServiceImpl implements CitaService {
 	}
 
 	/**
-	 * Metodo que valida la fecha de atención
+	 * Metodo que valida la fecha de atenciï¿½n
 	 * 
 	 * @param fechaReserva
 	 * @param fechaAtencion
@@ -281,14 +334,14 @@ public class CitaServiceImpl implements CitaService {
 	}
 
 	/**
-	 * Método que valida si la fecha de reserva se encuentra en el rango
-	 * permitido de la fecha de atención, en base al MAX y MIN de días de
-	 * anticipación permitidos
+	 * Mï¿½todo que valida si la fecha de reserva se encuentra en el rango
+	 * permitido de la fecha de atenciï¿½n, en base al MAX y MIN de dï¿½as de
+	 * anticipaciï¿½n permitidos
 	 * 
 	 * @param fechaReserva
 	 * @param fechaAtencion
 	 * @return una constante de ServiceConstants dependendiendo si la fecha de
-	 *         reserva es valida o no y si se encuentra en el límite la cte.
+	 *         reserva es valida o no y si se encuentra en el lï¿½mite la cte.
 	 *         indica que hay que restringir la hora.
 	 */
 	private int validarFechaReserva(LocalDate fechaReserva, LocalDate fechaAtencion) {
@@ -306,7 +359,7 @@ public class CitaServiceImpl implements CitaService {
 	}
 
 	/**
-	 * Método que evalua si la hora esta antes del parametro definidio. No es
+	 * Mï¿½todo que evalua si la hora esta antes del parametro definidio. No es
 	 * inclusivo con el minuto/segundo final.
 	 * 
 	 * @param horaReserva
@@ -316,8 +369,8 @@ public class CitaServiceImpl implements CitaService {
 	}
 
 	/**
-	 * Método que solo verifica si una cita es adicional o no, es decir, si la
-	 * fecha de reserva es la misma que la fecha de atención.
+	 * Mï¿½todo que solo verifica si una cita es adicional o no, es decir, si la
+	 * fecha de reserva es la misma que la fecha de atenciï¿½n.
 	 * 
 	 * @param fechaReserva
 	 * @param fechaAtencion
@@ -332,7 +385,7 @@ public class CitaServiceImpl implements CitaService {
 	}
 
     /**
-     * Cancela una cita, verificando las condiciones de validación
+     * Cancela una cita, verificando las condiciones de validaciï¿½n
      * */
 	@Transactional
 	@Override

@@ -34,7 +34,7 @@ public class CitaTransformer {
 
 		List<CitaEventoBO> listaCitas = new ArrayList<CitaEventoBO>();
 		for (Object[] object : listObjects) {
-			//listaCitas.add(transformObjectToBo(object));
+			listaCitas.add(transformObjectToCitaEventoBo(object));
 		}
 		return listaCitas;
 	}
@@ -88,7 +88,7 @@ public class CitaTransformer {
 		return citaBO;
 	}
 	
-	public static CitaEventoBO transformObjectCitaEventoToBo(Object[] objects) {
+	public static CitaEventoBO transformObjectToCitaEventoBo(Object[] objects) {
 		CitaEventoBO citaevento_BO = null;
 		if (objects != null) {
 			citaevento_BO = new CitaEventoBO();

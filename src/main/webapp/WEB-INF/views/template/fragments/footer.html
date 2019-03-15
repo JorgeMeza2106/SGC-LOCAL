@@ -114,34 +114,7 @@
                     //$("#descripcion-modal").html(calEvent.descripcion);
                     //$("#exampleModal").modal();
                 },
-                eventSources:[{
-                    events:[
-                        {
-                            title: 'Evento 1',
-                            descripcion: "Con fe amigos",
-                            start: '2019-03-02',
-                            color: "green",
-                            textColor: "white"
-                        },
-                        {
-                            title: 'Evento 2',
-                            descripcion: "Juego de tronos temporada final",
-                            start: '2019-03-03',
-                            end: '2019-03-05'
-                        },
-                        {
-                            title: 'Evento 3',
-                            descripcion: "Los siete pecados capitales",
-                            start: '2019-03-07T12:30:00',
-                            allDay: false
-                        }
-                    ],
-                    //sino se declara parametros en cada event,toma en cuenta los parametros generales
-                    //para colores tambien se puede usar hexadecimal
-                    color: "black",
-                    textColor: "yellow"
-                }]
-                
+                events: "http://localhost:8080/SGC/alumno/citas/mensajeGsonCitas"
             })
         });
     </script>
