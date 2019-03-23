@@ -43,7 +43,7 @@
 	<!-- Full Calendar -->+
 	<!--  <script type="text/javascript" th:src="@{/resources/js/moment.min.js}"></script> -->
 	<script type="text/javascript" th:src="@{/resources/js/fullcalendar.js}"></script>
-	<script type="text/javascript" th:src="@{/resources/js/es.js}"></script>
+ 	<script type="text/javascript" th:src="@{/resources/js/es.js}"></script> 
 	
 	<script type="text/javascript">
 	$(document).ready(function() {
@@ -88,7 +88,12 @@
 		<script>
         $(document).ready(function(){
             $('#calendar').fullCalendar({
-                header:{
+            	dayNamesShort: ['Domingo', 'Lunes', 'Martes', 'Mi\u00E9rcoles', 'Jueves', 'Viernes', 'S\u00E1bado'],
+            	monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'],
+            	buttonText:{
+            		month:"Mes",week:"Semana",day:"D\u00EDa",list:"Agenda"
+            		},
+            	header:{
                     // se puede usar left y right
                     // center: 'MiBoton',
                     right:'today, prev, next, basicDay, month'
