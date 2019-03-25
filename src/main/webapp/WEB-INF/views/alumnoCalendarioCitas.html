@@ -36,6 +36,148 @@
 		</div>
 	</div>
 	
+	<!-- Registro de Citas -->
+				<div id="modalCalendarioDescripcion" class="modal fade" role="dialog">
+					<div class="modal-dialog">
+						<div class="modal-content">
+							<div class="modal-header-primary">
+								<button type="button" class="close" data-dismiss="modal">&times;</button>
+								<h4 class="modal-title text-center">
+									<b>REGISTRO DE NUEVA CITA</b>
+								</h4>
+							</div>
+							<div id="resultadoValidacion" class='notifications top-rigth'></div>
+							<div class="modal-body ">
+								<div class="row">
+									<div id="nroHC" class="col-lg-3"></div>
+									<div id="nombresPaciente" class="col-lg-9"></div>
+								</div>
+
+								<div class="row">
+									<div class="col-lg-12">
+										<div th:if="${mensaje != null}" class="alert alert-danger"
+											role="alert">
+											<p>
+												<span class="glyphicon glyphicon-exclamation-sign"
+													aria-hidden="true"></span> <span
+													th:text="${mensaje.getValor()}" th:remove="tag"
+													class="sr-only"> </span>
+											</p>
+										</div>
+									</div>
+								</div>
+
+								<div class="row">
+									<div class="col-lg-8 col-lg-offset-2">
+										<form id="formNuevaCita" th:action="@{citas/registrar}"
+											method="POST" class="form-horizontal" role="form">
+											<fieldset class="scheduler-border">
+												<legend class="scheduler-border">Datos de la cita</legend>
+
+												<div class="form-group">
+													<input type="hidden" name="idAsignacion" id="idAsignacion"></input>
+												</div>
+												<div class="form-group">
+													<label for="selectorCurso" class="col-lg-3 control-label">Curso</label>
+													<div class="col-lg-9">
+														<select class="form-control" th:id="idCurso"
+															th:name="idCurso" onchange="filtrar('Clinicas')">
+															<option value="-1">Seleccione Curso</option>
+															<option th:each="curso : ${cursos}"
+																th:value="${curso.idCurso}" th:text="${curso.nombre}">Periodoncia</option>
+														</select>
+													</div>
+												</div>
+
+												<div class="form-group">
+													<label for="selectorClinica" class="col-lg-3 control-label">Clínica</label>
+													<div class="col-lg-9">
+														<select th:remove="all-but-first" class="form-control"
+															id="idClinica" onchange="filtrar('Dias')"
+															name="idClinica">
+															<option th:value="${-1}">Seleccione Clínica</option>
+															<option th:each="clinica : ${clinicas}"
+																th:value="${clinica.idClinica}"
+																th:text="${clinica.nombre}"></option>
+															<!-- Clinica 1 (Lu, Mi, Vi)-->
+														</select>
+													</div>
+												</div>
+
+												<div class="form-group">
+													<label for="fechaAtencion" class="col-lg-3 control-label">Dia
+													</label>
+													<div class="col-lg-9">
+														<div class='input-group date' id='fechaAtencionDP'>
+															<input onkeypress="validarFecha()" required="required"
+																id="fechaAtencion" name="fechaAtencion" type='text'
+																placeholder="dd-mm-aaaa" disabled="disabled"
+																class="form-control" /> <span class="input-group-addon">
+																<span class="glyphicon glyphicon-calendar"></span>
+															</span>
+														</div>
+													</div>
+												</div>
+
+												<div class="form-group">
+													<label for="fecha_cita" class="col-lg-3 control-label">Turno</label>
+													<div class="col-lg-9">
+														<label class="radio-inline"> <input type="radio"
+															id="turno1" name="turno" value="M" checked="checked" />Mañana
+														</label> <label class="radio-inline"> <input type="radio"
+															value="T" id="turno2" name="turno" />Tarde
+														</label>
+													</div>
+												</div>
+
+
+											</fieldset>
+										</form>
+
+
+									</div>
+
+									<div class="col-lg-4"></div>
+								</div>
+
+								<div class="row">
+									<div class="col-lg-12">
+										<fieldset class="scheduler-border">
+											<legend class="scheduler-border">Lista de Horarios
+												permitidos</legend>
+											<div class="form-group">
+												<div class="col-lg-12">
+													<table id="tablaClinicas" class="table table-hover">
+														<thead>
+															<tr>
+																<th>N°</th>
+																<th>Clinica</th>
+																<th>Dias</th>
+															</tr>
+														</thead>
+														<tbody>
+														</tbody>
+													</table>
+												</div>
+											</div>
+										</fieldset>
+									</div>
+								</div>
+							</div>
+
+							<div class="modal-footer">
+								<div class="form-group">
+									<div class="col-lg-offset-2 col-lg-10">
+										<button type="submit" onclick="registrarCita()"
+											class="btn btn-sm btn-primary">REGISTRAR</button>
+									</div>
+								</div>
+							</div>
+
+
+						</div>
+					</div>
+				</div>
 	
 </body>
 </html>

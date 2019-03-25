@@ -94,8 +94,6 @@
             		month:"Mes",week:"Semana",day:"D\u00EDa",list:"Agenda"
             		},
             	header:{
-                    // se puede usar left y right
-                    // center: 'MiBoton',
                     right:'today, prev, next, basicDay, month'
                 },
                 /*
@@ -107,19 +105,42 @@
                             }
                     }
                 }
-                */
+                
                 dayClick: function(date, jsEvent, view){
                     alert(date.format());
                     alert(view.name);
                     $(this).css("background-color","red");
                     //$("#exampleModal").modal();
                 },
+                */
                 eventClick: function(calEvent, jsEvent, view){
                     //$("#title-modal").html(calEvent.title);
                     //$("#descripcion-modal").html(calEvent.descripcion);
-                    //$("#exampleModal").modal();
+                    //$("#modalCalendarioDescripcion").modal();
+                	alert("sdgdf");
                 },
-                events: "http://localhost:8080/SGC/alumno/citas/mensajeGsonCitas"
+                //events: "http://localhost:8080/SGC/alumno/citas/mensajeGsonCitas"
+                events:[
+                    {
+                        title: 'Evento 1',
+                        descripcion: "Con fe amigos",
+                        start: '2019-03-02',
+                        color: "green",
+                        textColor: "white"
+                    },
+                    {
+                        title: 'Evento 2',
+                        descripcion: "Juego de tronos temporada final",
+                        start: '2019-03-03',
+                        end: '2019-03-05'
+                    },
+                    {
+                        title: 'Evento 3',
+                        descripcion: "Los siete pecados capitales",
+                        start: '2019-03-07T12:30:00',
+                        allDay: false
+                    }
+                ],
             })
         });
     </script>
